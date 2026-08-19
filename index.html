@@ -50,66 +50,47 @@
   }
   .mono{ font-family:'IBM Plex Mono', monospace; }
 
-  /* ---- Header ---- */
   header.top{
     padding: 22px 20px 16px;
     position:sticky; top:0; z-index:5;
     background: var(--bg);
     border-bottom: 2px dashed var(--line-strong);
   }
-  header.top .brand{
-    display:flex; align-items:baseline; gap:8px;
-  }
+  header.top .brand{ display:flex; align-items:baseline; gap:8px; }
   header.top .brand h1{ font-size:26px; }
   header.top .brand .tag{
     font-family:'IBM Plex Mono', monospace;
-    font-size:11px;
-    color: var(--green-deep);
+    font-size:11px; color: var(--green-deep);
     background: rgba(53,96,63,0.12);
-    padding:2px 7px;
-    border-radius: 20px;
-    text-transform:uppercase;
-    letter-spacing:.06em;
+    padding:2px 7px; border-radius: 20px;
+    text-transform:uppercase; letter-spacing:.06em;
   }
-  header.top .sub{
-    margin-top:4px;
-    font-size:13px;
-    color: var(--ink-soft);
-  }
+  header.top .sub{ margin-top:4px; font-size:13px; color: var(--ink-soft); }
 
   main{ flex:1; padding: 18px 16px 100px; }
 
-  /* ---- Cards ---- */
   .card{
     background: var(--card);
     border-radius: var(--radius);
     border: 1px solid var(--line);
     box-shadow: 0 2px 0 rgba(43,36,32,0.06);
-    padding: 16px;
-    margin-bottom: 14px;
+    padding: 16px; margin-bottom: 14px;
   }
   .card h2{ font-size:17px; margin-bottom:4px; font-weight:700; }
   .muted{ color: var(--ink-soft); font-size:13px; line-height:1.5; }
 
   .section-label{
     font-family:'IBM Plex Mono', monospace;
-    font-size:11px;
-    text-transform:uppercase;
-    letter-spacing:.08em;
-    color: var(--ink-soft);
-    margin: 4px 0 10px;
+    font-size:11px; text-transform:uppercase; letter-spacing:.08em;
+    color: var(--ink-soft); margin: 4px 0 10px;
   }
 
-  /* ---- Buttons ---- */
   button{ font-family:inherit; cursor:pointer; }
   .btn{
-    border:none; border-radius:10px;
-    padding:11px 16px;
-    font-weight:700;
-    font-size:14px;
+    border:none; border-radius:10px; padding:11px 16px;
+    font-weight:700; font-size:14px;
     display:inline-flex; align-items:center; gap:6px;
-    transition: transform .08s ease;
-    font-family:'Manrope', sans-serif;
+    transition: transform .08s ease; font-family:'Manrope', sans-serif;
   }
   .btn:active{ transform: scale(0.97); }
   .btn-primary{ background: var(--green); color:#fff; }
@@ -121,30 +102,22 @@
   .btn-block{ width:100%; justify-content:center; }
   .btn-sm{ padding:7px 11px; font-size:12.5px; border-radius:8px; }
 
-  /* ---- Tab bar ---- */
   nav.tabs{
-    position: sticky; bottom:0;
-    max-width:480px;
-    background: var(--card);
-    border-top: 2px solid var(--ink);
-    display:flex;
-    z-index:10;
+    position: sticky; bottom:0; max-width:480px;
+    background: var(--card); border-top: 2px solid var(--ink);
+    display:flex; z-index:10; padding:5px 4px;
   }
   nav.tabs button{
-    flex:1;
-    background:none; border:none;
-    padding: 10px 2px 12px;
+    flex:1; background:none; border:none; padding: 8px 2px;
     display:flex; flex-direction:column; align-items:center; gap:3px;
-    color: var(--ink-soft);
-    font-size:10.5px;
-    font-weight:700;
-    font-family:'Manrope', sans-serif;
+    color: var(--ink-soft); font-size:10.5px; font-weight:700; font-family:'Manrope', sans-serif;
+    border-radius: 12px; margin: 0 3px;
+    transition: background .15s ease, color .15s ease;
   }
-  nav.tabs button svg{ width:20px; height:20px; }
-  nav.tabs button.active{ color: var(--green-deep); }
-  nav.tabs button.active svg{ stroke: var(--green-deep); }
+  nav.tabs button svg{ width:20px; height:20px; transition: stroke .15s ease; }
+  nav.tabs button.active{ color: #fff; background: var(--green); box-shadow: 0 2px 0 rgba(36,70,44,0.35); }
+  nav.tabs button.active svg{ stroke: #fff; }
 
-  /* ---- Personas / periodo ---- */
   .stepper{ display:flex; align-items:center; gap:12px; }
   .stepper button{
     width:34px; height:34px; border-radius:9px; border:1.5px solid var(--line-strong);
@@ -153,24 +126,17 @@
   }
   .stepper .val{ font-family:'Manrope',sans-serif; font-weight:800; font-size:19px; min-width:20px; text-align:center; }
 
-  /* ---- Meal grid (weekly menu) — vertical ---- */
   .day-card{
-    background: var(--card);
-    border:1px solid var(--line);
-    border-radius: var(--radius);
-    padding:14px;
-    margin-bottom:10px;
+    background: var(--card); border:1px solid var(--line); border-radius: var(--radius);
+    padding:14px; margin-bottom:10px;
   }
   .day-card .day-name{
     font-family:'Manrope', sans-serif; font-weight:800; font-size:15.5px;
-    border-bottom:1px dashed var(--line-strong);
-    padding-bottom:8px; margin-bottom:8px;
+    border-bottom:1px dashed var(--line-strong); padding-bottom:8px; margin-bottom:8px;
   }
   .meal-slot{
     display:flex; justify-content:space-between; align-items:flex-start; gap:10px;
-    padding:9px 0;
-    border-bottom:1px dotted var(--line);
-    font-size:13px;
+    padding:9px 0; border-bottom:1px dotted var(--line); font-size:13px;
   }
   .meal-slot:last-child{ border-bottom:none; }
   .meal-slot .label{ color: var(--ink-soft); font-family:'IBM Plex Mono',monospace; font-size:10px; text-transform:uppercase; width:70px; flex-shrink:0; padding-top:2px;}
@@ -178,43 +144,28 @@
   .meal-slot .recipe-name.empty{ color: var(--line-strong); font-style:italic; font-weight:400;}
   .meal-slot .recipe-name .rn-item{ display:block; }
 
-  /* ---- Receipt-style shopping list ---- */
   .receipt{
-    background: var(--card);
-    border-radius: 4px;
-    position:relative;
-    padding: 20px 18px 10px;
-    box-shadow: 0 3px 0 rgba(43,36,32,0.08);
+    background: var(--card); border-radius: 4px; position:relative;
+    padding: 20px 18px 10px; box-shadow: 0 3px 0 rgba(43,36,32,0.08);
   }
   .receipt::before{
-    content:"";
-    position:absolute; top:-6px; left:0; right:0; height:12px;
+    content:""; position:absolute; top:-6px; left:0; right:0; height:12px;
     background-image: radial-gradient(circle, var(--bg) 6px, transparent 6.5px);
-    background-size: 16px 16px;
-    background-position: -4px -4px;
+    background-size: 16px 16px; background-position: -4px -4px;
   }
   .receipt-head{ text-align:center; margin-bottom:10px; }
   .receipt-head .store-tag{ font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.08em; text-transform:uppercase; color: var(--green-deep); }
   .cat-block{ margin-bottom:6px; }
   .cat-title{
-    font-family:'IBM Plex Mono', monospace;
-    font-size:11px; text-transform:uppercase; letter-spacing:.06em;
-    color:#fff; background: var(--green-deep);
-    display:inline-block; padding:3px 9px; border-radius:20px;
+    font-family:'IBM Plex Mono', monospace; font-size:11px; text-transform:uppercase; letter-spacing:.06em;
+    color:#fff; background: var(--green-deep); display:inline-block; padding:3px 9px; border-radius:20px;
     margin: 10px 0 6px;
   }
-  .item-row{
-    display:flex; align-items:center; gap:10px;
-    padding:8px 0;
-    border-bottom:1px dashed var(--line);
-  }
+  .item-row{ display:flex; align-items:center; gap:10px; padding:8px 0; border-bottom:1px dashed var(--line); }
   .item-row:last-child{ border-bottom:none; }
   .item-row .check{
-    width:20px; height:20px; border-radius:5px;
-    border:2px solid var(--line-strong);
-    flex-shrink:0;
-    display:flex; align-items:center; justify-content:center;
-    background:#fff;
+    width:20px; height:20px; border-radius:5px; border:2px solid var(--line-strong);
+    flex-shrink:0; display:flex; align-items:center; justify-content:center; background:#fff;
   }
   .item-row.checked .check{ background: var(--green); border-color: var(--green); }
   .item-row.checked .check svg{ display:block; }
@@ -225,13 +176,10 @@
   .item-row .del{ background:none;border:none; color:var(--red); opacity:.55; padding:2px 4px; font-size:15px; }
   .store-chips{ display:flex; gap:4px; flex-wrap:wrap; margin-top:3px; }
   .store-chip{
-    font-family:'IBM Plex Mono', monospace;
-    font-size:9.5px; text-transform:uppercase;
-    background: rgba(231,167,44,0.22); color:#7A5411;
-    padding:1.5px 6px; border-radius:8px;
+    font-family:'IBM Plex Mono', monospace; font-size:9.5px; text-transform:uppercase;
+    background: rgba(231,167,44,0.22); color:#7A5411; padding:1.5px 6px; border-radius:8px;
   }
 
-  /* ---- Recipe list ---- */
   .recipe-card{
     background: var(--card); border:1px solid var(--line); border-radius: var(--radius);
     padding:13px; margin-bottom:10px;
@@ -245,8 +193,8 @@
   }
   .badge-source.manual{ background: rgba(53,96,63,0.15); color: var(--green-deep); }
   .badge-source.web{ background: rgba(193,68,46,0.13); color: var(--red); }
+  .badge-source.imported{ background: rgba(231,167,44,0.25); color: #7A5411; }
 
-  /* ---- Forms ---- */
   .field{ margin-bottom:12px; }
   .field label{ display:block; font-size:12px; font-weight:700; color: var(--ink-soft); margin-bottom:5px; font-family:'Manrope',sans-serif;}
   .field input, .field select, .field textarea{
@@ -260,7 +208,6 @@
   .ing-row select{ flex:1.4; }
   .ing-row button{ flex-shrink:0; background:none; border:none; color:var(--red); font-size:18px; padding:4px;}
 
-  /* ---- Store search grid ---- */
   .store-grid{ display:grid; grid-template-columns: 1fr 1fr; gap:9px; margin-top:10px; }
   .store-btn{
     display:flex; flex-direction:column; align-items:flex-start; gap:2px;
@@ -270,11 +217,7 @@
   .store-btn .sname{ font-family:'Manrope',sans-serif; font-weight:700; font-size:14px; }
   .store-btn .sfound{ font-size:10.5px; color: var(--green-deep); font-family:'IBM Plex Mono',monospace; }
 
-  /* ---- Recipe pick rows (multi-select) ---- */
-  .pick-row{
-    display:flex; align-items:center; gap:10px;
-    padding:10px 0; border-bottom:1px dashed var(--line); cursor:pointer;
-  }
+  .pick-row{ display:flex; align-items:center; gap:10px; padding:10px 0; border-bottom:1px dashed var(--line); cursor:pointer; }
   .pick-row:last-child{ border-bottom:none; }
   .pick-row .box{
     width:20px; height:20px; border-radius:5px; border:2px solid var(--line-strong);
@@ -286,22 +229,17 @@
   .pick-row .pname{ flex:1; font-weight:600; font-size:14px; }
   .pick-row .pmeta{ font-size:11px; color: var(--ink-soft); font-family:'IBM Plex Mono',monospace; }
 
-  /* ---- Empty state ---- */
   .empty-state{ text-align:center; padding: 30px 14px; color: var(--ink-soft); }
   .empty-state .big{ font-family:'Manrope',sans-serif; font-weight:800; font-size:16px; color: var(--ink); margin-bottom:4px;}
 
-  /* ---- Modal ---- */
   .modal-overlay{
     position:fixed; inset:0; background: rgba(43,36,32,0.55);
     display:flex; align-items:flex-end; justify-content:center; z-index:50;
   }
   .modal-overlay.hidden{ display:none; }
   .modal-sheet{
-    background: var(--bg); width:100%; max-width:480px;
-    border-radius: 20px 20px 0 0;
-    max-height:88vh; overflow-y:auto;
-    padding: 18px 18px 26px;
-    animation: slideUp .22s ease;
+    background: var(--bg); width:100%; max-width:480px; border-radius: 20px 20px 0 0;
+    max-height:88vh; overflow-y:auto; padding: 18px 18px 26px; animation: slideUp .22s ease;
   }
   @keyframes slideUp{ from{ transform:translateY(30px); opacity:0;} to{ transform:translateY(0); opacity:1;} }
   .modal-head{ display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; }
@@ -310,6 +248,11 @@
 
   .period-toggle{ display:flex; gap:8px; }
   .period-toggle button{ flex:1; }
+
+  .file-btn{ position:relative; overflow:hidden; }
+  .file-btn input[type=file]{
+    position:absolute; inset:0; opacity:0; cursor:pointer; width:100%; height:100%;
+  }
 
   ::-webkit-scrollbar{ display:none; }
 </style>
@@ -373,15 +316,161 @@ const UNITS = ['unidad','g','kg','ml','l','paquete','atado','cucharada','taza','
 const MEALS = [ {k:'desayuno', l:'Desayuno'}, {k:'almuerzo', l:'Almuerzo'}, {k:'cena', l:'Cena'} ];
 const DAY_NAMES = ['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'];
 
-const STORAGE_KEY = 'compri_data_v2';
+const STORAGE_KEY = 'compri_data_v4';
+
+function ing(name, qty, unit, category){ return {name, qty, unit, category}; }
+
+function seedRecipes(){
+  return [
+    { id:'seed1', name:'Tortilla de papas española', servings:4, source:'web',
+      url:'https://www.paulinacocina.net/tortilla-de-papas-espanola/10476',
+      ingredients:[
+        ing('Huevos',4,'unidad','Lácteos'),
+        ing('Papas medianas',3,'unidad','Verdulería'),
+        ing('Cebolla',0.5,'unidad','Verdulería'),
+        ing('Sal',1,'pizca','Almacén'),
+        ing('Aceite',3,'cucharada','Almacén'),
+      ]},
+    { id:'seed2', name:'Pascualina', servings:8, source:'web',
+      url:'https://cookpad.com/uy/recetas/26011875?ref=search&search_term=pascualina',
+      ingredients:[
+        ing('Acelga',4,'atado','Verdulería'),
+        ing('Huevos',6,'unidad','Lácteos'),
+        ing('Sal',1,'pizca','Almacén'),
+        ing('Nuez moscada',1,'pizca','Almacén'),
+        ing('Harina',2,'taza','Almacén'),
+        ing('Aceite',0.5,'taza','Almacén'),
+        ing('Polvo de hornear',1,'cucharada','Almacén'),
+        ing('Cebolla',1,'unidad','Verdulería'),
+        ing('Morrón',0.5,'unidad','Verdulería'),
+      ]},
+    { id:'seed3', name:'Chow fan de pollo', servings:4, source:'web',
+      url:'https://www.paulinacocina.net/chow-fan/40157',
+      ingredients:[
+        ing('Arroz cocido grano largo',3,'taza','Almacén'),
+        ing('Pechugas de pollo',2,'unidad','Carnicería'),
+        ing('Zanahoria',1,'unidad','Verdulería'),
+        ing('Pimiento rojo',0.5,'unidad','Verdulería'),
+        ing('Huevos',3,'unidad','Lácteos'),
+        ing('Ajo',2,'unidad','Verdulería'),
+        ing('Salsa de soja',3,'cucharada','Almacén'),
+        ing('Aceite de sésamo',1,'cucharada','Almacén'),
+        ing('Cebolla de verdeo',2,'unidad','Verdulería'),
+        ing('Aceite neutro',2,'cucharada','Almacén'),
+      ]},
+    { id:'seed4', name:'Panqueques de avena y banana', servings:2, source:'web',
+      url:'https://www.paulinacocina.net/panqueques-de-avena-y-banana/26061',
+      ingredients:[
+        ing('Bananas',2,'unidad','Verdulería'),
+        ing('Leche',100,'ml','Lácteos'),
+        ing('Avena molida',10,'cucharada','Almacén'),
+        ing('Huevos',2,'unidad','Lácteos'),
+        ing('Miel',1,'cucharada','Almacén'),
+        ing('Manteca',50,'g','Lácteos'),
+        ing('Canela',2,'pizca','Almacén'),
+      ]},
+    { id:'seed5', name:'Huevos revueltos', servings:1, source:'web',
+      url:'https://www.paulinacocina.net/huevos-revueltos-perfectos-huevo-paulina/20532',
+      ingredients:[
+        ing('Huevos',3,'unidad','Lácteos'),
+        ing('Sal',1,'pizca','Almacén'),
+        ing('Leche',30,'ml','Lácteos'),
+        ing('Manteca',10,'g','Lácteos'),
+      ]},
+    { id:'seed6', name:'Arepas rellenas de atún', servings:3, source:'web',
+      url:'https://zenu.com.co/receta/arepas-rellenas-de-atun/',
+      ingredients:[
+        ing('Harina de maíz precocida',1,'taza','Almacén'),
+        ing('Manteca',1,'cucharada','Lácteos'),
+        ing('Sal',1,'pizca','Almacén'),
+        ing('Queso mozzarella',0.5,'taza','Lácteos'),
+        ing('Atún en lata',2,'unidad','Almacén'),
+        ing('Cebolla',0.5,'unidad','Verdulería'),
+        ing('Tomate',1,'unidad','Verdulería'),
+        ing('Cilantro',1,'atado','Verdulería'),
+        ing('Mayonesa',2,'cucharada','Almacén'),
+        ing('Palta',1,'unidad','Verdulería'),
+      ]},
+    { id:'seed7', name:'Pastel de papas', servings:4, source:'web',
+      url:'https://www.paulinacocina.net/pastel-de-papas/15',
+      ingredients:[
+        ing('Papas',1,'kg','Verdulería'),
+        ing('Carne picada',0.5,'kg','Carnicería'),
+        ing('Cebolla',1,'unidad','Verdulería'),
+        ing('Pimiento morrón',0.5,'unidad','Verdulería'),
+        ing('Ajo',2,'unidad','Verdulería'),
+        ing('Pastilla de caldo',1,'unidad','Almacén'),
+        ing('Ajo en polvo',1,'pizca','Almacén'),
+        ing('Pimentón',1,'pizca','Almacén'),
+        ing('Manteca',25,'g','Lácteos'),
+        ing('Leche',50,'ml','Lácteos'),
+        ing('Nuez moscada',1,'pizca','Almacén'),
+        ing('Aceite',2,'cucharada','Almacén'),
+        ing('Sal',1,'pizca','Almacén'),
+        ing('Pimienta',1,'pizca','Almacén'),
+      ]},
+    { id:'seed8', name:'Pan de carne', servings:8, source:'web',
+      url:'https://cookpad.com/uy/recetas/23944627?ref=search&search_term=pan+de+carne',
+      ingredients:[
+        ing('Carne picada magra',1,'kg','Carnicería'),
+        ing('Huevos',3,'unidad','Lácteos'),
+        ing('Sal',2,'pizca','Almacén'),
+        ing('Adobo',2,'cucharada','Almacén'),
+        ing('Orégano',2,'cucharada','Almacén'),
+        ing('Pimentón',1,'cucharada','Almacén'),
+        ing('Panceta en fetas',150,'g','Fiambrería'),
+        ing('Morrón',0.5,'unidad','Verdulería'),
+        ing('Pan rallado',125,'g','Almacén'),
+        ing('Jamón',250,'g','Fiambrería'),
+        ing('Muzzarella',250,'g','Lácteos'),
+        ing('Mostaza',3,'cucharada','Almacén'),
+        ing('Aceite',1,'cucharada','Almacén'),
+      ]},
+    { id:'seed9', name:'Carré de cerdo al horno', servings:4, source:'web',
+      url:'https://www.paulinacocina.net/carre-de-cerdo/42643',
+      ingredients:[
+        ing('Carré de cerdo',1.5,'kg','Carnicería'),
+        ing('Aceite de oliva',2,'cucharada','Almacén'),
+        ing('Ajo',4,'unidad','Verdulería'),
+        ing('Romero fresco',1,'unidad','Verdulería'),
+        ing('Tomillo fresco',1,'unidad','Verdulería'),
+        ing('Vino blanco',0.5,'taza','Bebidas'),
+        ing('Sal',1,'pizca','Almacén'),
+        ing('Pimienta negra',1,'pizca','Almacén'),
+        ing('Cebolla',2,'unidad','Verdulería'),
+        ing('Zanahoria',2,'unidad','Verdulería'),
+      ]},
+    { id:'seed10', name:'Arroz verde cremoso', servings:6, source:'web',
+      url:'https://cookpad.com/uy/recetas/23958750?ref=search&search_term=arroz+verde',
+      ingredients:[
+        ing('Espinaca',10,'unidad','Verdulería'),
+        ing('Perejil',1,'atado','Verdulería'),
+        ing('Ajo',4,'unidad','Verdulería'),
+        ing('Aceite de oliva',4,'cucharada','Almacén'),
+        ing('Arroz',2,'taza','Almacén'),
+        ing('Sal gruesa',1,'cucharada','Almacén'),
+        ing('Queso cremoso',50,'g','Lácteos'),
+      ]},
+    { id:'seed11', name:'Puré de papas', servings:4, source:'web',
+      url:'https://www.uncomo.com/comida/receta/como-hacer-pure-de-papas-36051.html',
+      ingredients:[
+        ing('Papas grandes',4,'unidad','Verdulería'),
+        ing('Leche',200,'ml','Lácteos'),
+        ing('Mantequilla',80,'g','Lácteos'),
+        ing('Sal',1,'pizca','Almacén'),
+        ing('Pimienta',1,'pizca','Almacén'),
+        ing('Nuez moscada',1,'pizca','Almacén'),
+      ]},
+  ];
+}
 
 function defaultData(){
   return {
-    period: 'semana', // 'semana' | 'quincena'
+    period: 'semana',
     people: 4,
     days: buildDays('semana'),
-    recipes: [],
-    shoppingList: [], // {id,name,qty,unit,category,checked,manual,stores:[]}
+    recipes: seedRecipes(),
+    shoppingList: [],
     templates: [],
     activeTab: 'inicio',
   };
@@ -638,14 +727,23 @@ function renderRecetas(){
   const addCard = el('div','card');
   addCard.innerHTML = `
     <h2 style="font-size:16px;">Agregar receta</h2>
-    <div style="display:flex; gap:8px; margin-top:10px;">
+    <div style="display:flex; gap:8px; margin-top:10px; flex-wrap:wrap;">
       <button class="btn btn-primary" id="addManual">Cargar receta</button>
       <button class="btn btn-outline" id="addWeb">Buscar en internet</button>
+      <button class="btn btn-outline file-btn" id="importBtn">
+        Importar
+        <input type="file" id="importInput" accept=".json,application/json" multiple>
+      </button>
     </div>
+    <p class="muted" style="margin-top:10px;">Importá archivos .json de recetas que te haya compartido un amigo con Compri, o exportá las tuyas desde cada receta para enviárselas.</p>
   `;
   mainEl.appendChild(addCard);
   addCard.querySelector('#addManual').onclick = ()=> openRecipeForm();
   addCard.querySelector('#addWeb').onclick = openWebRecipeSearch;
+  addCard.querySelector('#importInput').addEventListener('change', (e)=>{
+    if(e.target.files && e.target.files.length) handleImportFiles(e.target.files);
+    e.target.value = '';
+  });
 
   if(!data.recipes.length){
     const empty = el('div','card');
@@ -656,21 +754,25 @@ function renderRecetas(){
 
   data.recipes.forEach(r=>{
     const card = el('div','recipe-card');
+    const badgeLabel = r.source==='web' ? 'de la web' : (r.source==='imported' ? 'importada' : 'manual');
+    const badgeClass = r.source==='web' ? 'web' : (r.source==='imported' ? 'imported' : 'manual');
     card.innerHTML = `
       <div class="rtitle">
         <div>
           <h3>${r.name}</h3>
           <div class="ring">${r.ingredients.length} ingrediente${r.ingredients.length!==1?'s':''}${r.servings ? ' · Rinde '+r.servings+' porciones' : ''}</div>
         </div>
-        <span class="badge-source ${r.source==='web'?'web':'manual'}">${r.source==='web' ? 'de la web' : 'manual'}</span>
+        <span class="badge-source ${badgeClass}">${badgeLabel}</span>
       </div>
-      <div style="display:flex; gap:6px; margin-top:10px;">
+      <div style="display:flex; gap:6px; margin-top:10px; flex-wrap:wrap;">
         <button class="btn btn-ghost" data-act="edit">Editar</button>
+        <button class="btn btn-ghost" data-act="export">Exportar</button>
         ${r.url ? `<a class="btn btn-ghost" href="${r.url}" target="_blank" rel="noopener">Ver fuente</a>` : ''}
         <button class="btn btn-danger" data-act="del">Eliminar</button>
       </div>
     `;
     card.querySelector('[data-act="edit"]').onclick = ()=> openRecipeForm(r.id);
+    card.querySelector('[data-act="export"]').onclick = ()=> exportRecipe(r);
     card.querySelector('[data-act="del"]').onclick = ()=>{
       if(confirm(`¿Eliminar "${r.name}"?`)){
         data.recipes = data.recipes.filter(x=>x.id!==r.id);
@@ -679,6 +781,62 @@ function renderRecetas(){
       }
     };
     mainEl.appendChild(card);
+  });
+}
+
+function exportRecipe(r){
+  const payload = {
+    compriRecipe: true, version: 1,
+    name: r.name, servings: r.servings, url: r.url || '',
+    ingredients: r.ingredients.map(i=>({name:i.name, qty:i.qty, unit:i.unit, category:i.category}))
+  };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const slug = r.name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'') || 'receta';
+  a.href = url; a.download = slug + '.json';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  setTimeout(()=> URL.revokeObjectURL(url), 3000);
+}
+
+function handleImportFiles(fileList){
+  let importedCount = 0;
+  let failedCount = 0;
+  const files = Array.from(fileList);
+  let pending = files.length;
+  files.forEach(file=>{
+    const reader = new FileReader();
+    reader.onload = (e)=>{
+      try{
+        const parsed = JSON.parse(e.target.result);
+        const arr = Array.isArray(parsed) ? parsed : [parsed];
+        arr.forEach(item=>{
+          if(!item || !item.name || !Array.isArray(item.ingredients)) { failedCount++; return; }
+          data.recipes.push({
+            id: uid(),
+            name: String(item.name),
+            servings: parseInt(item.servings) || 4,
+            source: 'imported',
+            url: item.url || '',
+            ingredients: item.ingredients.map(i=>({
+              name: String(i.name||'').trim() || 'Ingrediente',
+              qty: Number(i.qty) || 1,
+              unit: UNITS.includes(i.unit) ? i.unit : 'unidad',
+              category: CATEGORIES.includes(i.category) ? i.category : 'Otros'
+            }))
+          });
+          importedCount++;
+        });
+      }catch(err){ failedCount++; }
+      pending--;
+      if(pending===0){
+        save(); render();
+        if(importedCount) alert(`Se importaron ${importedCount} receta${importedCount!==1?'s':''}.` + (failedCount? ` (${failedCount} archivo(s) no se pudieron leer)`:''));
+        else alert('No se pudo importar ningún archivo. Verificá que sean archivos .json exportados desde Compri.');
+      }
+    };
+    reader.onerror = ()=>{ failedCount++; pending--; if(pending===0){ save(); render(); } };
+    reader.readAsText(file);
   });
 }
 
@@ -778,24 +936,35 @@ function openRecipeForm(recipeId, prefill){
    PANTALLA: LISTA DE COMPRA
 ========================================================= */
 function generateShoppingList(){
-  const map = {};
+  // 1) contar cuántas veces aparece cada receta en todo el menú (no por comida individual)
+  const occurrences = {};
   data.days.forEach(day=>{
     MEALS.forEach(m=>{
       day.meals[m.k].forEach(rid=>{
-        const r = getRecipe(rid);
-        if(!r) return;
-        // cuántas veces "rinde" la receta según personas del menú vs porciones de la receta
-        const multiplier = Math.max(1, Math.ceil((data.people||1) / (r.servings || data.people || 1)));
-        r.ingredients.forEach(ing=>{
-          const key = (ing.name.trim().toLowerCase())+'|'+ing.unit;
-          if(!map[key]){
-            map[key] = { id: uid(), name: ing.name.trim(), qty:0, unit: ing.unit, category: ing.category, checked:false, manual:false, stores:[] };
-          }
-          map[key].qty += (Number(ing.qty)||0) * multiplier;
-        });
+        occurrences[rid] = (occurrences[rid]||0) + 1;
       });
     });
   });
+
+  // 2) por receta, calcular cuántas "tandas" de la receta hacen falta según las porciones
+  //    totales necesarias (apariciones x personas) contra lo que rinde la receta.
+  //    Así, la misma tanda cubre varias comidas (sobras) sin duplicar ingredientes.
+  const map = {};
+  Object.keys(occurrences).forEach(rid=>{
+    const r = getRecipe(rid);
+    if(!r) return;
+    const servings = r.servings || data.people || 1;
+    const totalPortionsNeeded = occurrences[rid] * (data.people || 1);
+    const batches = Math.max(1, Math.ceil(totalPortionsNeeded / servings));
+    r.ingredients.forEach(ingr=>{
+      const key = (ingr.name.trim().toLowerCase())+'|'+ingr.unit;
+      if(!map[key]){
+        map[key] = { id: uid(), name: ingr.name.trim(), qty:0, unit: ingr.unit, category: ingr.category, checked:false, manual:false, stores:[] };
+      }
+      map[key].qty += (Number(ingr.qty)||0) * batches;
+    });
+  });
+
   const manualItems = data.shoppingList.filter(i=>i.manual);
   const oldChecks = {};
   data.shoppingList.forEach(i=>{ oldChecks[(i.name.toLowerCase())+'|'+i.unit] = i.checked; });
@@ -865,7 +1034,6 @@ function renderLista(){
   });
   mainEl.appendChild(receipt);
 
-  // Vista por súper
   const perStore = {};
   data.shoppingList.filter(i=>!i.checked).forEach(item=>{
     if(!item.stores.length){
