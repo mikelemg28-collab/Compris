@@ -187,6 +187,10 @@
   .recipe-card .rtitle{ display:flex; justify-content:space-between; align-items:flex-start; gap:8px;}
   .recipe-card h3{ font-size:15.5px; font-weight:700;}
   .recipe-card .ring{ font-size:12px; color: var(--ink-soft); margin-top:4px; }
+  .type-tag{
+    font-family:'IBM Plex Mono',monospace; font-size:9.5px; text-transform:uppercase; letter-spacing:.04em;
+    padding:2px 7px; border-radius:8px; display:inline-block; margin-top:5px;
+  }
   .badge-source{
     font-family:'IBM Plex Mono',monospace; font-size:9.5px; text-transform:uppercase;
     padding:2px 6px; border-radius:8px; flex-shrink:0; margin-top:2px;
@@ -228,6 +232,12 @@
   .pick-row.on .box svg{ display:block; }
   .pick-row .pname{ flex:1; font-weight:600; font-size:14px; }
   .pick-row .pmeta{ font-size:11px; color: var(--ink-soft); font-family:'IBM Plex Mono',monospace; }
+
+  .filter-pills{ display:flex; gap:6px; flex-wrap:wrap; margin-bottom:12px; }
+  .filter-pill{
+    padding:6px 12px; border-radius:20px; border:1.5px solid var(--line-strong);
+    background:#fff; font-size:12px; font-weight:700; font-family:'Manrope',sans-serif;
+  }
 
   .empty-state{ text-align:center; padding: 30px 14px; color: var(--ink-soft); }
   .empty-state .big{ font-family:'Manrope',sans-serif; font-weight:800; font-size:16px; color: var(--ink); margin-bottom:4px;}
@@ -315,6 +325,39 @@ const CATEGORIES = ['Verdulería','Almacén','Carnicería','Panadería','Lácteo
 const UNITS = ['unidad','g','kg','ml','l','paquete','atado','cucharada','taza','pizca'];
 const MEALS = [ {k:'desayuno', l:'Desayuno'}, {k:'almuerzo', l:'Almuerzo'}, {k:'cena', l:'Cena'} ];
 const DAY_NAMES = ['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'];
+const RECIPE_TYPES = ['Plato principal','Acompañamiento','Ensalada','Sopa/crema','Pastas','Salsas','Postre','Desayuno/Merienda','Otro'];
+
+// Un color distinto por tipo de plato: {tint} para fondos suaves, {dark} para texto y estado activo del filtro.
+const TYPE_STYLES = {
+  'Plato principal':   { tint:'rgba(53,96,63,0.16)',   dark:'#24462C' },
+  'Acompañamiento':    { tint:'rgba(180,141,80,0.24)', dark:'#7A5A22' },
+  'Ensalada':          { tint:'rgba(107,142,78,0.22)', dark:'#3E5C29' },
+  'Sopa/crema':        { tint:'rgba(62,124,138,0.20)', dark:'#1F4B54' },
+  'Pastas':            { tint:'rgba(201,162,39,0.26)', dark:'#7A5C11' },
+  'Salsas':            { tint:'rgba(193,68,46,0.18)',  dark:'#8C2E1D' },
+  'Postre':            { tint:'rgba(199,123,149,0.24)',dark:'#8C3B57' },
+  'Desayuno/Merienda': { tint:'rgba(217,138,61,0.22)', dark:'#8A4F14' },
+  'Otro':              { tint:'rgba(107,95,78,0.18)',  dark:'#4A4033' },
+};
+function typeStyle(t){ return TYPE_STYLES[t] || TYPE_STYLES['Otro']; }
+function pillStyle(active, type){
+  if(type==='Todas'){
+    return active
+      ? 'background:var(--green);border-color:var(--green);color:#fff;'
+      : 'background:#fff;border-color:var(--line-strong);color:var(--ink-soft);';
+  }
+  const s = typeStyle(type);
+  return active
+    ? `background:${s.dark};border-color:${s.dark};color:#fff;`
+    : `background:${s.tint};border-color:${s.dark};color:${s.dark};`;
+}
+function buildPillsHtml(options, active){
+  return `<div class="filter-pills">${options.map(o=>`<button type="button" class="filter-pill" data-f="${escapeHtml(o)}" style="${pillStyle(o===active,o)}">${escapeHtml(o)}</button>`).join('')}</div>`;
+}
+function presentRecipeTypes(){
+  const set = new Set(data.recipes.map(r=> r.type || 'Otro'));
+  return RECIPE_TYPES.filter(t=> set.has(t));
+}
 
 const STORAGE_KEY = 'compri_data_v4';
 
@@ -322,7 +365,7 @@ function ing(name, qty, unit, category){ return {name, qty, unit, category}; }
 
 function seedRecipes(){
   return [
-    { id:'seed1', name:'Tortilla de papas española', servings:4, source:'web',
+    { id:'seed1', name:'Tortilla de papas española', servings:4, type:'Plato principal', source:'web',
       url:'https://www.paulinacocina.net/tortilla-de-papas-espanola/10476',
       ingredients:[
         ing('Huevos',4,'unidad','Lácteos'),
@@ -331,7 +374,7 @@ function seedRecipes(){
         ing('Sal',1,'pizca','Almacén'),
         ing('Aceite',3,'cucharada','Almacén'),
       ]},
-    { id:'seed2', name:'Pascualina', servings:8, source:'web',
+    { id:'seed2', name:'Pascualina', servings:8, type:'Plato principal', source:'web',
       url:'https://cookpad.com/uy/recetas/26011875?ref=search&search_term=pascualina',
       ingredients:[
         ing('Acelga',4,'atado','Verdulería'),
@@ -344,7 +387,7 @@ function seedRecipes(){
         ing('Cebolla',1,'unidad','Verdulería'),
         ing('Morrón',0.5,'unidad','Verdulería'),
       ]},
-    { id:'seed3', name:'Chow fan de pollo', servings:4, source:'web',
+    { id:'seed3', name:'Chow fan de pollo', servings:4, type:'Plato principal', source:'web',
       url:'https://www.paulinacocina.net/chow-fan/40157',
       ingredients:[
         ing('Arroz cocido grano largo',3,'taza','Almacén'),
@@ -358,7 +401,7 @@ function seedRecipes(){
         ing('Cebolla de verdeo',2,'unidad','Verdulería'),
         ing('Aceite neutro',2,'cucharada','Almacén'),
       ]},
-    { id:'seed4', name:'Panqueques de avena y banana', servings:2, source:'web',
+    { id:'seed4', name:'Panqueques de avena y banana', servings:2, type:'Desayuno/Merienda', source:'web',
       url:'https://www.paulinacocina.net/panqueques-de-avena-y-banana/26061',
       ingredients:[
         ing('Bananas',2,'unidad','Verdulería'),
@@ -369,7 +412,7 @@ function seedRecipes(){
         ing('Manteca',50,'g','Lácteos'),
         ing('Canela',2,'pizca','Almacén'),
       ]},
-    { id:'seed5', name:'Huevos revueltos', servings:1, source:'web',
+    { id:'seed5', name:'Huevos revueltos', servings:1, type:'Desayuno/Merienda', source:'web',
       url:'https://www.paulinacocina.net/huevos-revueltos-perfectos-huevo-paulina/20532',
       ingredients:[
         ing('Huevos',3,'unidad','Lácteos'),
@@ -377,7 +420,7 @@ function seedRecipes(){
         ing('Leche',30,'ml','Lácteos'),
         ing('Manteca',10,'g','Lácteos'),
       ]},
-    { id:'seed6', name:'Arepas rellenas de atún', servings:3, source:'web',
+    { id:'seed6', name:'Arepas rellenas de atún', servings:3, type:'Plato principal', source:'web',
       url:'https://zenu.com.co/receta/arepas-rellenas-de-atun/',
       ingredients:[
         ing('Harina de maíz precocida',1,'taza','Almacén'),
@@ -391,7 +434,7 @@ function seedRecipes(){
         ing('Mayonesa',2,'cucharada','Almacén'),
         ing('Palta',1,'unidad','Verdulería'),
       ]},
-    { id:'seed7', name:'Pastel de papas', servings:4, source:'web',
+    { id:'seed7', name:'Pastel de papas', servings:4, type:'Plato principal', source:'web',
       url:'https://www.paulinacocina.net/pastel-de-papas/15',
       ingredients:[
         ing('Papas',1,'kg','Verdulería'),
@@ -409,7 +452,7 @@ function seedRecipes(){
         ing('Sal',1,'pizca','Almacén'),
         ing('Pimienta',1,'pizca','Almacén'),
       ]},
-    { id:'seed8', name:'Pan de carne', servings:8, source:'web',
+    { id:'seed8', name:'Pan de carne', servings:8, type:'Plato principal', source:'web',
       url:'https://cookpad.com/uy/recetas/23944627?ref=search&search_term=pan+de+carne',
       ingredients:[
         ing('Carne picada magra',1,'kg','Carnicería'),
@@ -426,7 +469,7 @@ function seedRecipes(){
         ing('Mostaza',3,'cucharada','Almacén'),
         ing('Aceite',1,'cucharada','Almacén'),
       ]},
-    { id:'seed9', name:'Carré de cerdo al horno', servings:4, source:'web',
+    { id:'seed9', name:'Carré de cerdo al horno', servings:4, type:'Plato principal', source:'web',
       url:'https://www.paulinacocina.net/carre-de-cerdo/42643',
       ingredients:[
         ing('Carré de cerdo',1.5,'kg','Carnicería'),
@@ -440,7 +483,7 @@ function seedRecipes(){
         ing('Cebolla',2,'unidad','Verdulería'),
         ing('Zanahoria',2,'unidad','Verdulería'),
       ]},
-    { id:'seed10', name:'Arroz verde cremoso', servings:6, source:'web',
+    { id:'seed10', name:'Arroz verde cremoso', servings:6, type:'Acompañamiento', source:'web',
       url:'https://cookpad.com/uy/recetas/23958750?ref=search&search_term=arroz+verde',
       ingredients:[
         ing('Espinaca',10,'unidad','Verdulería'),
@@ -451,7 +494,7 @@ function seedRecipes(){
         ing('Sal gruesa',1,'cucharada','Almacén'),
         ing('Queso cremoso',50,'g','Lácteos'),
       ]},
-    { id:'seed11', name:'Puré de papas', servings:4, source:'web',
+    { id:'seed11', name:'Puré de papas', servings:4, type:'Acompañamiento', source:'web',
       url:'https://www.uncomo.com/comida/receta/como-hacer-pure-de-papas-36051.html',
       ingredients:[
         ing('Papas grandes',4,'unidad','Verdulería'),
@@ -495,6 +538,8 @@ function load(){
 }
 function save(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); }
 function uid(){ return Math.random().toString(36).slice(2,10); }
+
+let recetasFilter = 'Todas';
 
 /* =========================================================
    NAV
@@ -662,21 +707,39 @@ function changePeriod(p){
 function openMealPicker(dayIdx, mealKey){
   const day = data.days[dayIdx];
   let selected = [...day.meals[mealKey]];
-  let body = '';
+  let pickFilter = 'Todas';
+
   if(!data.recipes.length){
-    body = `<p class="muted">Todavía no cargaste recetas. Andá a la pestaña <strong>Recetas</strong> para agregar alguna.</p>`;
-  } else {
-    body = `<div id="pickList"></div>`;
+    openModal(`${day.label} · ${MEALS.find(m=>m.k===mealKey).l}`, `<p class="muted">Todavía no cargaste recetas. Andá a la pestaña <strong>Recetas</strong> para agregar alguna.</p>`);
+    return;
   }
+
   openModal(`${day.label} · ${MEALS.find(m=>m.k===mealKey).l}`, `
     <p class="muted" style="margin-top:-6px; margin-bottom:10px;">Podés combinar varias recetas para esta comida.</p>
-    ${body}
+    <div id="pickFilters"></div>
+    <div id="pickList"></div>
     <button class="btn btn-primary btn-block" id="pickSave" style="margin-top:14px;">Guardar selección</button>
   `);
+
+  const filtersEl = document.getElementById('pickFilters');
   const listEl = document.getElementById('pickList');
+  const filterOpts = ['Todas', ...presentRecipeTypes()];
+
+  function renderFilters(){
+    if(filterOpts.length<=1){ filtersEl.innerHTML=''; return; }
+    filtersEl.innerHTML = buildPillsHtml(filterOpts, pickFilter);
+    filtersEl.querySelectorAll('.filter-pill').forEach(b=>{
+      b.addEventListener('click', ()=>{ pickFilter = b.dataset.f; renderFilters(); renderPickList(); });
+    });
+  }
+
   function renderPickList(){
-    if(!listEl) return;
-    listEl.innerHTML = data.recipes.map(r=>{
+    const filtered = pickFilter==='Todas' ? data.recipes : data.recipes.filter(r=>(r.type||'Otro')===pickFilter);
+    if(!filtered.length){
+      listEl.innerHTML = `<p class="muted">No hay recetas en "${pickFilter}" todavía.</p>`;
+      return;
+    }
+    listEl.innerHTML = filtered.map(r=>{
       const on = selected.includes(r.id);
       const meta = r.servings ? `Rinde ${r.servings} porc. · ~${Math.max(1, Math.floor(r.servings / (data.people||1)))} comida(s) para ${data.people}p` : '';
       return `
@@ -697,6 +760,8 @@ function openMealPicker(dayIdx, mealKey){
       });
     });
   }
+
+  renderFilters();
   renderPickList();
   document.getElementById('pickSave').onclick = ()=>{
     day.meals[mealKey] = selected;
@@ -752,15 +817,38 @@ function renderRecetas(){
     return;
   }
 
-  data.recipes.forEach(r=>{
+  const present = presentRecipeTypes();
+  if(recetasFilter!=='Todas' && !present.includes(recetasFilter)) recetasFilter='Todas';
+  const filterOpts = ['Todas', ...present];
+  if(filterOpts.length>1){
+    const filterCard = el('div');
+    filterCard.innerHTML = buildPillsHtml(filterOpts, recetasFilter);
+    mainEl.appendChild(filterCard);
+    filterCard.querySelectorAll('.filter-pill').forEach(b=>{
+      b.addEventListener('click', ()=>{ recetasFilter = b.dataset.f; render(); });
+    });
+  }
+
+  const filtered = recetasFilter==='Todas' ? data.recipes : data.recipes.filter(r=>(r.type||'Otro')===recetasFilter);
+
+  if(!filtered.length){
+    const empty = el('div','card');
+    empty.innerHTML = `<div class="empty-state"><div class="big">Nada por acá</div><div>No tenés recetas en "${recetasFilter}" todavía.</div></div>`;
+    mainEl.appendChild(empty);
+    return;
+  }
+
+  filtered.forEach(r=>{
     const card = el('div','recipe-card');
     const badgeLabel = r.source==='web' ? 'de la web' : (r.source==='imported' ? 'importada' : 'manual');
     const badgeClass = r.source==='web' ? 'web' : (r.source==='imported' ? 'imported' : 'manual');
+    const ts = typeStyle(r.type||'Otro');
     card.innerHTML = `
       <div class="rtitle">
         <div>
           <h3>${r.name}</h3>
           <div class="ring">${r.ingredients.length} ingrediente${r.ingredients.length!==1?'s':''}${r.servings ? ' · Rinde '+r.servings+' porciones' : ''}</div>
+          <span class="type-tag" style="background:${ts.tint}; color:${ts.dark};">${r.type || 'Otro'}</span>
         </div>
         <span class="badge-source ${badgeClass}">${badgeLabel}</span>
       </div>
@@ -787,7 +875,7 @@ function renderRecetas(){
 function exportRecipe(r){
   const payload = {
     compriRecipe: true, version: 1,
-    name: r.name, servings: r.servings, url: r.url || '',
+    name: r.name, servings: r.servings, type: r.type || 'Otro', url: r.url || '',
     ingredients: r.ingredients.map(i=>({name:i.name, qty:i.qty, unit:i.unit, category:i.category}))
   };
   const blob = new Blob([JSON.stringify(payload, null, 2)], {type:'application/json'});
@@ -816,6 +904,7 @@ function handleImportFiles(fileList){
             id: uid(),
             name: String(item.name),
             servings: parseInt(item.servings) || 4,
+            type: RECIPE_TYPES.includes(item.type) ? item.type : 'Otro',
             source: 'imported',
             url: item.url || '',
             ingredients: item.ingredients.map(i=>({
@@ -860,7 +949,7 @@ function openWebRecipeSearch(){
 
 function openRecipeForm(recipeId, prefill){
   const editing = recipeId ? getRecipe(recipeId) : null;
-  const base = editing || prefill || { name:'', ingredients:[], source:'manual', url:'', servings:4 };
+  const base = editing || prefill || { name:'', ingredients:[], source:'manual', url:'', servings:4, type:'Otro' };
   let ingredients = editing ? JSON.parse(JSON.stringify(editing.ingredients)) : [];
 
   const bodyWrap = document.createElement('div');
@@ -868,6 +957,10 @@ function openRecipeForm(recipeId, prefill){
     <div class="field">
       <label>Nombre de la receta</label>
       <input type="text" id="rName" value="${escapeHtml(base.name)}" placeholder="ej. Tarta de acelga">
+    </div>
+    <div class="field">
+      <label>Tipo de plato</label>
+      <select id="rType">${RECIPE_TYPES.map(t=>`<option ${(base.type||'Otro')===t?'selected':''}>${t}</option>`).join('')}</select>
     </div>
     <div class="field">
       <label>¿Para cuántas porciones rinde?</label>
@@ -918,15 +1011,16 @@ function openRecipeForm(recipeId, prefill){
     const name = bodyWrap.querySelector('#rName').value.trim();
     if(!name){ alert('Ponele un nombre a la receta.'); return; }
     const servings = parseInt(bodyWrap.querySelector('#rServings').value) || 4;
+    const type = bodyWrap.querySelector('#rType').value;
     const cleanIngs = ingredients.filter(i=>i.name && i.name.trim()).map(i=>({
       name: i.name.trim(), qty: parseFloat(i.qty)||1, unit: i.unit||'unidad', category: i.category||'Otros'
     }));
     const urlField = bodyWrap.querySelector('#rUrl');
     if(editing){
-      editing.name = name; editing.ingredients = cleanIngs; editing.servings = servings;
+      editing.name = name; editing.ingredients = cleanIngs; editing.servings = servings; editing.type = type;
       if(urlField) editing.url = urlField.value.trim();
     } else {
-      data.recipes.push({ id: uid(), name, ingredients: cleanIngs, servings, source: base.source||'manual', url: urlField ? urlField.value.trim() : '' });
+      data.recipes.push({ id: uid(), name, ingredients: cleanIngs, servings, type, source: base.source||'manual', url: urlField ? urlField.value.trim() : '' });
     }
     save(); closeModal(); render();
   };
