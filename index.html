@@ -56,7 +56,7 @@
     background: var(--bg);
     border-bottom: 2px dashed var(--line-strong);
   }
-  header.top .brand{ display:flex; align-items:baseline; gap:8px; }
+  header.top .brand{ display:flex; align-items:center; gap:8px; }
   header.top .brand h1{ font-size:26px; }
   header.top .brand .tag{
     font-family:'IBM Plex Mono', monospace;
@@ -189,7 +189,7 @@
   .recipe-card .ring{ font-size:12px; color: var(--ink-soft); margin-top:4px; }
   .type-tag{
     font-family:'IBM Plex Mono',monospace; font-size:9.5px; text-transform:uppercase; letter-spacing:.04em;
-    padding:2px 7px; border-radius:8px; display:inline-block; margin-top:5px;
+    padding:2px 7px; border-radius:8px; display:inline-block; margin-top:5px; font-weight:600;
   }
   .badge-source{
     font-family:'IBM Plex Mono',monospace; font-size:9.5px; text-transform:uppercase;
@@ -235,7 +235,7 @@
 
   .filter-pills{ display:flex; gap:6px; flex-wrap:wrap; margin-bottom:12px; }
   .filter-pill{
-    padding:6px 12px; border-radius:20px; border:1.5px solid var(--line-strong);
+    padding:6px 12px; border-radius:20px; border:1.5px solid;
     background:#fff; font-size:12px; font-weight:700; font-family:'Manrope',sans-serif;
   }
 
@@ -264,6 +264,29 @@
     position:absolute; inset:0; opacity:0; cursor:pointer; width:100%; height:100%;
   }
 
+  .help-btn{
+    width:30px; height:30px; border-radius:50%; border:1.5px solid var(--line-strong);
+    background:#fff; font-family:'Manrope',sans-serif; font-weight:800; font-size:15px;
+    color: var(--green-deep); flex-shrink:0; display:flex; align-items:center; justify-content:center;
+  }
+  .help-body h3{ font-family:'Manrope',sans-serif; font-weight:800; font-size:15px; margin:16px 0 6px; color:var(--ink); }
+  .help-body h3:first-child{ margin-top:4px; }
+  .help-body p{ margin:4px 0; font-size:13px; color:var(--ink-soft); line-height:1.55; }
+  .help-body ul{ margin:6px 0 10px 18px; padding:0; font-size:13px; color:var(--ink-soft); line-height:1.6; }
+  .help-body strong{ color:var(--ink); font-weight:700; }
+  .help-body code{ background:rgba(107,95,78,0.12); padding:1px 5px; border-radius:5px; font-family:'IBM Plex Mono',monospace; font-size:12px; }
+  .help-tip{
+    background: rgba(231,167,44,0.18); border-left:3px solid var(--yellow);
+    padding:9px 11px; border-radius:8px; font-size:12.5px; color:#7A5411; margin:12px 0;
+  }
+  .tour-emoji{ font-size:34px; text-align:center; margin-bottom:2px; }
+  .tour-title{ text-align:center; margin-top:2px !important; }
+  .tour-dots{ display:flex; justify-content:center; gap:6px; margin:16px 0 6px; }
+  .tour-dot{ width:7px; height:7px; border-radius:50%; background: var(--line-strong); transition: all .2s ease; }
+  .tour-dot.active{ background: var(--green); width:18px; border-radius:4px; }
+  .tour-nav{ display:flex; justify-content:space-between; align-items:center; margin-top:4px; gap:8px; }
+  .tour-nav .btn{ flex:none; }
+
   ::-webkit-scrollbar{ display:none; }
 </style>
 </head>
@@ -272,6 +295,11 @@
 
   <header class="top">
     <div class="brand">
+      <svg viewBox="0 0 24 24" fill="none" stroke="var(--green-deep)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="26" height="26" style="flex-shrink:0;">
+        <circle cx="9" cy="20" r="1.4" fill="var(--green-deep)" stroke="none"/>
+        <circle cx="18" cy="20" r="1.4" fill="var(--green-deep)" stroke="none"/>
+        <path d="M2.5 3h2l2.4 12.2a2 2 0 0 0 2 1.6h8.6a2 2 0 0 0 2-1.6L21 8H6"/>
+      </svg>
       <h1>Compri</h1>
       <span class="tag" id="periodTag">semana</span>
     </div>
@@ -325,39 +353,21 @@ const CATEGORIES = ['Verdulería','Almacén','Carnicería','Panadería','Lácteo
 const UNITS = ['unidad','g','kg','ml','l','paquete','atado','cucharada','taza','pizca'];
 const MEALS = [ {k:'desayuno', l:'Desayuno'}, {k:'almuerzo', l:'Almuerzo'}, {k:'cena', l:'Cena'} ];
 const DAY_NAMES = ['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'];
-const RECIPE_TYPES = ['Plato principal','Acompañamiento','Ensalada','Sopa/crema','Pastas','Salsas','Postre','Desayuno/Merienda','Otro'];
 
-// Un color distinto por tipo de plato: {tint} para fondos suaves, {dark} para texto y estado activo del filtro.
-const TYPE_STYLES = {
-  'Plato principal':   { tint:'rgba(53,96,63,0.16)',   dark:'#24462C' },
-  'Acompañamiento':    { tint:'rgba(180,141,80,0.24)', dark:'#7A5A22' },
-  'Ensalada':          { tint:'rgba(107,142,78,0.22)', dark:'#3E5C29' },
-  'Sopa/crema':        { tint:'rgba(62,124,138,0.20)', dark:'#1F4B54' },
-  'Pastas':            { tint:'rgba(201,162,39,0.26)', dark:'#7A5C11' },
-  'Salsas':            { tint:'rgba(193,68,46,0.18)',  dark:'#8C2E1D' },
-  'Postre':            { tint:'rgba(199,123,149,0.24)',dark:'#8C3B57' },
-  'Desayuno/Merienda': { tint:'rgba(217,138,61,0.22)', dark:'#8A4F14' },
-  'Otro':              { tint:'rgba(107,95,78,0.18)',  dark:'#4A4033' },
+const RECIPE_TYPES = ['Plato principal','Acompañamiento','Ensalada','Sopa/crema','Pastas','Salsas','Postre','Desayuno/Merienda','Otro'];
+const TYPE_COLORS = {
+  'Plato principal':   { c:'#24462C', bg:'rgba(36,70,44,0.15)' },
+  'Acompañamiento':    { c:'#8A6A12', bg:'rgba(231,167,44,0.22)' },
+  'Ensalada':          { c:'#5A7A1E', bg:'rgba(120,160,40,0.18)' },
+  'Sopa/crema':        { c:'#2E6E8E', bg:'rgba(46,110,142,0.16)' },
+  'Pastas':            { c:'#8C6239', bg:'rgba(140,98,57,0.18)' },
+  'Salsas':            { c:'#C1442E', bg:'rgba(193,68,46,0.15)' },
+  'Postre':            { c:'#B0507A', bg:'rgba(176,80,122,0.16)' },
+  'Desayuno/Merienda': { c:'#C06A1E', bg:'rgba(217,123,41,0.18)' },
+  'Otro':              { c:'#6B5F4E', bg:'rgba(107,95,78,0.14)' },
 };
-function typeStyle(t){ return TYPE_STYLES[t] || TYPE_STYLES['Otro']; }
-function pillStyle(active, type){
-  if(type==='Todas'){
-    return active
-      ? 'background:var(--green);border-color:var(--green);color:#fff;'
-      : 'background:#fff;border-color:var(--line-strong);color:var(--ink-soft);';
-  }
-  const s = typeStyle(type);
-  return active
-    ? `background:${s.dark};border-color:${s.dark};color:#fff;`
-    : `background:${s.tint};border-color:${s.dark};color:${s.dark};`;
-}
-function buildPillsHtml(options, active){
-  return `<div class="filter-pills">${options.map(o=>`<button type="button" class="filter-pill" data-f="${escapeHtml(o)}" style="${pillStyle(o===active,o)}">${escapeHtml(o)}</button>`).join('')}</div>`;
-}
-function presentRecipeTypes(){
-  const set = new Set(data.recipes.map(r=> r.type || 'Otro'));
-  return RECIPE_TYPES.filter(t=> set.has(t));
-}
+function typeColor(t){ return TYPE_COLORS[t] || TYPE_COLORS['Otro']; }
+const TODAS_COLOR = { c:'#24462C', bg:'rgba(36,70,44,0.15)' };
 
 const STORAGE_KEY = 'compri_data_v4';
 
@@ -576,6 +586,25 @@ function render(){
   if(data.activeTab==='supers') renderSupers();
 }
 
+function presentRecipeTypes(){
+  const set = new Set(data.recipes.map(r=> r.type || 'Otro'));
+  return RECIPE_TYPES.filter(t=> set.has(t));
+}
+
+function renderFilterPills(container, filterOpts, currentVal, onPick){
+  container.innerHTML = `<div class="filter-pills">${filterOpts.map(o=>{
+    const col = o==='Todas' ? TODAS_COLOR : typeColor(o);
+    const active = currentVal===o;
+    const style = active
+      ? `background:${col.c}; border-color:${col.c}; color:#fff;`
+      : `background:#fff; border-color:${col.c}; color:${col.c};`;
+    return `<button type="button" class="filter-pill" data-f="${o}" style="${style}">${o}</button>`;
+  }).join('')}</div>`;
+  container.querySelectorAll('.filter-pill').forEach(b=>{
+    b.addEventListener('click', ()=> onPick(b.dataset.f));
+  });
+}
+
 /* =========================================================
    PANTALLA: INICIO
 ========================================================= */
@@ -586,7 +615,10 @@ function renderInicio(){
 
   const card = el('div','card');
   card.innerHTML = `
-    <h2>¡Hola! 👋</h2>
+    <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:10px;">
+      <h2>¡Hola! 👋</h2>
+      <button class="help-btn" id="helpBtn" aria-label="Cómo funciona Compri">?</button>
+    </div>
     <p class="muted">Llevás <strong>${plannedMeals}/${totalSlots}</strong> comidas planificadas esta ${data.period}, para <strong>${data.people} persona${data.people!=1?'s':''}</strong>.</p>
     <div style="display:flex; gap:8px; margin-top:12px; flex-wrap:wrap;">
       <button class="btn btn-primary" id="goMenu">Planificar menú</button>
@@ -596,6 +628,7 @@ function renderInicio(){
   mainEl.appendChild(card);
   card.querySelector('#goMenu').onclick = ()=>{ data.activeTab='menu'; save(); render(); };
   card.querySelector('#goList').onclick = ()=>{ data.activeTab='lista'; save(); render(); };
+  card.querySelector('#helpBtn').onclick = openHelpModal;
 
   const genCard = el('div','card');
   genCard.innerHTML = `
@@ -626,6 +659,66 @@ function renderInicio(){
 /* =========================================================
    PANTALLA: MENÚ SEMANAL
 ========================================================= */
+const HELP_STEPS = [
+  { emoji:'🛒', title:'¡Bienvenido a Compri!',
+    body:`<p style="text-align:center;">Organiza tus comidas, arma tu lista y haz las compras más fácil. 🛒</p>` },
+  { emoji:'🍽️', title:'1. Arma tu menú',
+    body:`<p>Ve a <strong>Menú</strong>, elige si quieres planificar una semana o una quincena e indica para cuántas personas cocinas.</p>
+          <p>Toca cualquier casillero (desayuno, almuerzo o cena) y elige una o varias recetas. Puedes combinar, por ejemplo, un plato principal con una ensalada. ¡Tú decides!</p>` },
+  { emoji:'📖', title:'2. Carga tus recetas',
+    body:`<p>En <strong>Recetas</strong> puedes:</p>
+          <ul>
+            <li>Agregar tus propias recetas.</li>
+            <li>Buscar recetas en internet.</li>
+            <li>Importar un archivo <code>.json</code> que te comparta alguien que también use Compri.</li>
+          </ul>
+          <p>A cada receta indícale cuántas porciones rinde y Compri se encargará de ajustar las cantidades según lo que necesites. 😉</p>`,
+    tip:'💡 Tip: Compri ya tiene algunas recetas precargadas. Pruébalas, edítalas y adáptalas a tus gustos.' },
+  { emoji:'🛒', title:'3. Genera tu lista de compra',
+    body:`<p>¿Menú listo? ¡Hora de ir de compras!</p>
+          <p>Toca "Generar lista desde el menú" desde Inicio o Lista. Compri suma automáticamente todos los ingredientes que necesitas, ajustados a las porciones que planificaste.</p>
+          <p>Además, los organiza por rubro: verdulería, almacén, carnicería, lácteos, etc.</p>` },
+  { emoji:'🏪', title:'4. Compra más fácil',
+    body:`<p>Desde <strong>Súper</strong> puedes buscar productos directamente en los sitios de los supermercados y marcar dónde los encontraste.</p>
+          <p>Así, tu lista también queda organizada por súper y sabes dónde comprar cada cosa.</p>` },
+  { emoji:'📤', title:'5. Compártela',
+    body:`<p>¿Lista lista? Desde <strong>Lista</strong>, toca "Compartir" y envíala a tus Notas, WhatsApp o donde quieras.</p>`,
+    tip:'💡 Todo lo que cargas se guarda en tu propio celular. No necesitas crear una cuenta ni tener conexión a internet, excepto para buscar recetas o consultar productos en los supermercados.' },
+];
+
+function openHelpModal(){
+  let step = 0;
+  openModal('¿Cómo funciona Compri?', `
+    <div id="tourStep"></div>
+    <div class="tour-dots" id="tourDots"></div>
+    <div class="tour-nav" id="tourNav"></div>
+  `);
+  const stepEl = document.getElementById('tourStep');
+  const dotsEl = document.getElementById('tourDots');
+  const navEl = document.getElementById('tourNav');
+
+  function renderStep(){
+    const s = HELP_STEPS[step];
+    stepEl.innerHTML = `<div class="help-body">
+      <div class="tour-emoji">${s.emoji}</div>
+      <h3 class="tour-title">${s.title}</h3>
+      ${s.body}
+      ${s.tip ? `<div class="help-tip">${s.tip}</div>` : ''}
+    </div>`;
+    dotsEl.innerHTML = HELP_STEPS.map((_,i)=>`<span class="tour-dot ${i===step?'active':''}"></span>`).join('');
+    const isLast = step === HELP_STEPS.length-1;
+    navEl.innerHTML = `
+      ${step>0 ? '<button class="btn btn-outline" id="tourBack">Atrás</button>' : '<span></span>'}
+      <button class="btn btn-primary" id="tourNext">${isLast ? 'Entendido' : 'Siguiente'}</button>
+    `;
+    if(step>0) navEl.querySelector('#tourBack').onclick = ()=>{ step--; renderStep(); };
+    navEl.querySelector('#tourNext').onclick = ()=>{
+      if(isLast){ closeModal(); } else { step++; renderStep(); }
+    };
+  }
+  renderStep();
+}
+
 function renderMenu(){
   const toggle = el('div','card');
   toggle.innerHTML = `
@@ -725,12 +818,8 @@ function openMealPicker(dayIdx, mealKey){
   const listEl = document.getElementById('pickList');
   const filterOpts = ['Todas', ...presentRecipeTypes()];
 
-  function renderFilters(){
-    if(filterOpts.length<=1){ filtersEl.innerHTML=''; return; }
-    filtersEl.innerHTML = buildPillsHtml(filterOpts, pickFilter);
-    filtersEl.querySelectorAll('.filter-pill').forEach(b=>{
-      b.addEventListener('click', ()=>{ pickFilter = b.dataset.f; renderFilters(); renderPickList(); });
-    });
+  function refreshFilters(){
+    renderFilterPills(filtersEl, filterOpts, pickFilter, (val)=>{ pickFilter = val; refreshFilters(); renderPickList(); });
   }
 
   function renderPickList(){
@@ -761,7 +850,7 @@ function openMealPicker(dayIdx, mealKey){
     });
   }
 
-  renderFilters();
+  refreshFilters();
   renderPickList();
   document.getElementById('pickSave').onclick = ()=>{
     day.meals[mealKey] = selected;
@@ -818,16 +907,12 @@ function renderRecetas(){
   }
 
   const present = presentRecipeTypes();
-  if(recetasFilter!=='Todas' && !present.includes(recetasFilter)) recetasFilter='Todas';
+  if(recetasFilter!=='Todas' && !present.includes(recetasFilter)) recetasFilter = 'Todas';
   const filterOpts = ['Todas', ...present];
-  if(filterOpts.length>1){
-    const filterCard = el('div');
-    filterCard.innerHTML = buildPillsHtml(filterOpts, recetasFilter);
-    mainEl.appendChild(filterCard);
-    filterCard.querySelectorAll('.filter-pill').forEach(b=>{
-      b.addEventListener('click', ()=>{ recetasFilter = b.dataset.f; render(); });
-    });
-  }
+
+  const filterWrap = el('div');
+  mainEl.appendChild(filterWrap);
+  renderFilterPills(filterWrap, filterOpts, recetasFilter, (val)=>{ recetasFilter = val; render(); });
 
   const filtered = recetasFilter==='Todas' ? data.recipes : data.recipes.filter(r=>(r.type||'Otro')===recetasFilter);
 
@@ -842,13 +927,13 @@ function renderRecetas(){
     const card = el('div','recipe-card');
     const badgeLabel = r.source==='web' ? 'de la web' : (r.source==='imported' ? 'importada' : 'manual');
     const badgeClass = r.source==='web' ? 'web' : (r.source==='imported' ? 'imported' : 'manual');
-    const ts = typeStyle(r.type||'Otro');
+    const tcol = typeColor(r.type || 'Otro');
     card.innerHTML = `
       <div class="rtitle">
         <div>
           <h3>${r.name}</h3>
           <div class="ring">${r.ingredients.length} ingrediente${r.ingredients.length!==1?'s':''}${r.servings ? ' · Rinde '+r.servings+' porciones' : ''}</div>
-          <span class="type-tag" style="background:${ts.tint}; color:${ts.dark};">${r.type || 'Otro'}</span>
+          <span class="type-tag" style="background:${tcol.bg}; color:${tcol.c};">${r.type || 'Otro'}</span>
         </div>
         <span class="badge-source ${badgeClass}">${badgeLabel}</span>
       </div>
@@ -1077,12 +1162,14 @@ function renderLista(){
     <div style="display:flex; gap:8px; flex-wrap:wrap;">
       <button class="btn btn-yellow" id="regen">Regenerar desde el menú</button>
       <button class="btn btn-outline" id="addManualItem">+ Ítem suelto</button>
+      <button class="btn btn-outline" id="shareList">Compartir</button>
       <button class="btn btn-ghost" id="clearChecked">Borrar comprados</button>
     </div>
   `;
   mainEl.appendChild(actionsCard);
   actionsCard.querySelector('#regen').onclick = ()=>{ generateShoppingList(); render(); };
   actionsCard.querySelector('#addManualItem').onclick = openManualItemForm;
+  actionsCard.querySelector('#shareList').onclick = shareShoppingList;
   actionsCard.querySelector('#clearChecked').onclick = ()=>{ data.shoppingList = data.shoppingList.filter(i=>!i.checked); save(); render(); };
 
   if(!data.shoppingList.length){
@@ -1151,6 +1238,57 @@ function renderLista(){
     storeCard.appendChild(sec);
   });
   mainEl.appendChild(storeCard);
+}
+
+function buildShareText(){
+  const lines = [];
+  lines.push('🧺 Lista de compra – Compri');
+  lines.push(`${data.period} · ${data.people} persona${data.people!=1?'s':''}`);
+  lines.push('');
+  CATEGORIES.forEach(cat=>{
+    const items = data.shoppingList.filter(i=>(i.category||'Otros')===cat);
+    if(!items.length) return;
+    lines.push(`*${cat}*`);
+    items.forEach(i=>{
+      const mark = i.checked ? '✅' : '▫️';
+      lines.push(`${mark} ${trimNum(i.qty)} ${i.unit} - ${i.name}`);
+    });
+    lines.push('');
+  });
+  return lines.join('\n').trim();
+}
+
+function shareShoppingList(){
+  if(!data.shoppingList.length){ alert('Tu lista está vacía todavía.'); return; }
+  const text = buildShareText();
+  if(navigator.share){
+    navigator.share({ title:'Lista de compra - Compri', text }).catch(()=>{});
+  } else {
+    openShareFallback(text);
+  }
+}
+
+function openShareFallback(text){
+  openModal('Compartir lista', `
+    <p class="muted">Tu navegador no tiene el menú nativo para compartir. Copiá el texto o abrilo directo en WhatsApp.</p>
+    <textarea id="shareText" readonly style="width:100%; min-height:180px; border-radius:9px; border:1.5px solid var(--line-strong); padding:10px; font-family:'IBM Plex Mono',monospace; font-size:12.5px; background:#fff; color:var(--ink);">${escapeHtml(text)}</textarea>
+    <div style="display:flex; gap:8px; margin-top:12px; flex-wrap:wrap;">
+      <button class="btn btn-primary" id="copyShare">Copiar texto</button>
+      <button class="btn btn-outline" id="waShare">Abrir en WhatsApp</button>
+    </div>
+  `);
+  document.getElementById('copyShare').onclick = ()=>{
+    const ta = document.getElementById('shareText');
+    ta.select();
+    try{ document.execCommand('copy'); }catch(e){}
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).catch(()=>{});
+    }
+    alert('Texto copiado. Pegalo donde quieras (Notas, WhatsApp, etc).');
+  };
+  document.getElementById('waShare').onclick = ()=>{
+    window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank');
+  };
 }
 
 function openManualItemForm(){
