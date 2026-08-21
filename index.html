@@ -341,13 +341,19 @@
    COMPRI — estado y persistencia
 ========================================================= */
 const STORES = [
-  { id:'tiendainglesa', name:'Tienda Inglesa', domain:'tiendainglesa.com.uy' },
-  { id:'disco', name:'Disco', domain:'disco.com.uy' },
-  { id:'tata', name:'Tata', domain:'tata.com.uy' },
-  { id:'geant', name:'Géant', domain:'geant.com.uy' },
-  { id:'devoto', name:'Devoto', domain:'devoto.com.uy' },
-  { id:'eldorado', name:'El Dorado', domain:'eldorado.com.uy' },
+  { id:'tiendainglesa', name:'Tienda Inglesa', url:'https://www.tiendainglesa.com.uy/supermercado' },
+  { id:'disco', name:'Disco', url:'https://www.disco.com.uy/' },
+  { id:'tata', name:'Tata', url:'https://www.tata.com.uy/' },
+  { id:'geant', name:'Géant', url:'https://www.geant.com.uy/' },
+  { id:'devoto', name:'Devoto', url:'https://www.devoto.com.uy/' },
+  { id:'eldorado', name:'El Dorado', url:'https://www.eldorado.com.uy/' },
 ];
+function allStores(){ return [...STORES, ...data.customStores]; }
+function buildStoreSearchUrl(store, query){
+  const base = store.url.replace(/\/$/, '');
+  const sep = base.includes('?') ? '&' : '?';
+  return base + sep + '_q=' + encodeURIComponent(query) + '&map=ft';
+}
 
 const CATEGORIES = ['Verdulería','Almacén','Carnicería','Panadería','Lácteos','Fiambrería','Bebidas','Congelados','Otros'];
 const UNITS = ['unidad','g','kg','ml','l','paquete','atado','cucharada','taza','pizca'];
@@ -525,6 +531,7 @@ function defaultData(){
     recipes: seedRecipes(),
     shoppingList: [],
     templates: [],
+    customStores: [],
     activeTab: 'inicio',
   };
 }
@@ -1340,17 +1347,24 @@ function renderSupers(){
   `;
   mainEl.appendChild(searchCard);
 
+  const stores = allStores();
   const grid = el('div','store-grid');
-  STORES.forEach(s=>{
+  stores.forEach(s=>{
     const btn = el('div','store-btn');
     btn.innerHTML = `<span class="sname">${s.name}</span><span class="sfound">Buscar →</span>`;
     btn.onclick = ()=>{
       const q = searchCard.querySelector('#sQuery').value.trim();
       if(!q){ alert('Escribí o elegí un producto primero.'); return; }
-      window.open('https://www.google.com/search?q=site:' + s.domain + '+' + encodeURIComponent(q), '_blank');
+      if(!s.url){ alert(`${s.name} no tiene sitio web cargado.`); return; }
+      window.open(buildStoreSearchUrl(s, q), '_blank');
     };
     grid.appendChild(btn);
   });
+  const addBtn = el('div','store-btn');
+  addBtn.style.cssText = 'border-style:dashed; align-items:center; justify-content:center; text-align:center; color:var(--green-deep);';
+  addBtn.innerHTML = `<span class="sname" style="width:100%; text-align:center;">+ Otro súper</span>`;
+  addBtn.onclick = openAddStoreForm;
+  grid.appendChild(addBtn);
   searchCard.appendChild(grid);
 
   const fromList = searchCard.querySelector('#sFromList');
@@ -1361,6 +1375,21 @@ function renderSupers(){
     });
   }
 
+  if(data.customStores.length){
+    const myStoresCard = el('div','card');
+    myStoresCard.innerHTML = `<div class="section-label">Tus súper agregados</div>`;
+    data.customStores.forEach(s=>{
+      const row = el('div');
+      row.style.cssText='display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px dashed var(--line);';
+      row.innerHTML = `<span>${escapeHtml(s.name)}</span>`;
+      const delBtn = mkBtn('Eliminar','btn-danger');
+      delBtn.onclick = ()=> deleteCustomStore(s.id);
+      row.appendChild(delBtn);
+      myStoresCard.appendChild(row);
+    });
+    mainEl.appendChild(myStoresCard);
+  }
+
   if(data.shoppingList.length){
     const assignCard = el('div','card');
     assignCard.innerHTML = `<h2 style="font-size:16px;">Marcar dónde lo encontraste</h2><p class="muted">Tocá los súper donde viste cada producto. Así arma la "Lista por súper" en la pestaña Lista.</p>`;
@@ -1369,7 +1398,7 @@ function renderSupers(){
       row.style.cssText = 'padding:10px 0; border-bottom:1px dashed var(--line);';
       row.innerHTML = `<div style="font-weight:700; font-family:'Manrope',sans-serif; font-size:13.5px; margin-bottom:6px;">${escapeHtml(item.name)}</div>
         <div style="display:flex; gap:5px; flex-wrap:wrap;">
-          ${STORES.map(s=>`<button class="btn btn-sm ${item.stores.includes(s.id)?'btn-primary':'btn-outline'}" data-store="${s.id}" data-item="${item.id}">${s.name}</button>`).join('')}
+          ${stores.map(s=>`<button class="btn btn-sm ${item.stores.includes(s.id)?'btn-primary':'btn-outline'}" data-store="${s.id}" data-item="${item.id}">${s.name}</button>`).join('')}
         </div>`;
       assignCard.appendChild(row);
     });
@@ -1386,13 +1415,37 @@ function renderSupers(){
   }
 }
 
+function openAddStoreForm(){
+  openModal('Agregar súper, almacén o verdulería', `
+    <div class="field"><label>Nombre</label><input type="text" id="csName" placeholder="ej. Almacén Don Pepe"></div>
+    <div class="field"><label>Sitio web (opcional)</label><input type="text" id="csUrl" placeholder="https://..."></div>
+    <button class="btn btn-primary btn-block" id="csSave">Agregar</button>
+    <p class="muted" style="margin-top:10px;">Si no tiene sitio web, igual podés agregarlo para marcarlo en tu lista — el botón de búsqueda simplemente no va a hacer nada para ese lugar.</p>
+  `);
+  document.getElementById('csSave').onclick = ()=>{
+    const name = document.getElementById('csName').value.trim();
+    if(!name){ alert('Ponele un nombre.'); return; }
+    let url = document.getElementById('csUrl').value.trim();
+    if(url && !/^https?:\/\//i.test(url)) url = 'https://' + url;
+    data.customStores.push({ id: uid(), name, url });
+    save(); closeModal(); render();
+  };
+}
+
+function deleteCustomStore(id){
+  if(!confirm('¿Eliminar este lugar de tu lista de súper?')) return;
+  data.customStores = data.customStores.filter(s=>s.id!==id);
+  data.shoppingList.forEach(i=>{ i.stores = i.stores.filter(s=>s!==id); });
+  save(); render();
+}
+
 /* =========================================================
    HELPERS
 ========================================================= */
 function el(tag, cls){ const e=document.createElement(tag); if(cls) e.className=cls; return e; }
 function mkBtn(text, cls){ const b=document.createElement('button'); b.className='btn '+cls; b.textContent=text; return b; }
 function getRecipe(id){ return data.recipes.find(r=>r.id===id); }
-function storeName(id){ const s = STORES.find(x=>x.id===id); return s ? s.name : id; }
+function storeName(id){ const s = allStores().find(x=>x.id===id); return s ? s.name : id; }
 function trimNum(n){ n = Number(n); return Number.isInteger(n) ? n : n.toFixed(1); }
 function escapeHtml(str){ return String(str).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 
