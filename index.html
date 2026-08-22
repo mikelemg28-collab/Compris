@@ -1021,28 +1021,56 @@ function handleImportFiles(fileList){
   });
 }
 
-function openWebRecipeSearch(){
+async function openWebRecipeSearch(){
   openModal('Buscar receta en internet', `
     <div class="field">
       <label>¿Qué querés cocinar?</label>
       <input type="text" id="webQuery" placeholder="ej. milanesas al horno">
     </div>
-    <button class="btn btn-primary btn-block" id="goSearch">Buscar en Google</button>
-    <p class="muted" style="margin-top:14px;">Se abre el buscador en una pestaña nueva. Cuando encuentres la receta que te gusta, volvé y tocá "Cargar receta" para guardar sus ingredientes en Compri.</p>
+    <button class="btn btn-primary btn-block" id="goSearch">✨ Buscar receta con IA</button>
+    <p class="muted" style="margin-top:14px;">Compri buscará una receta en internet y cargará automáticamente las porciones y cantidades. Antes de guardarla vas a poder revisar y editar todo.</p>
+    <div id="webSearchStatus" class="muted" style="margin-top:10px;"></div>
   `);
-  document.getElementById('goSearch').onclick = ()=>{
+
+  document.getElementById('goSearch').onclick = async ()=>{
     const q = document.getElementById('webQuery').value.trim();
     if(!q) return;
-    window.open('https://www.google.com/search?q=receta+' + encodeURIComponent(q), '_blank');
-    closeModal();
-    openRecipeForm(null, { name: q.charAt(0).toUpperCase()+q.slice(1), source:'web' });
+    const btn = document.getElementById('goSearch');
+    const status = document.getElementById('webSearchStatus');
+    btn.disabled = true;
+    btn.textContent = 'Buscando…';
+    status.textContent = 'Gemini está buscando una receta y leyendo sus ingredientes.';
+
+    try{
+      const res = await fetch('/api/recipe-search', {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({ query:q })
+      });
+      const result = await res.json();
+      if(!res.ok) throw new Error(result.error || 'No se pudo buscar la receta.');
+
+      closeModal();
+      openRecipeForm(null, {
+        name: result.name || (q.charAt(0).toUpperCase()+q.slice(1)),
+        source:'web',
+        url: result.url || '',
+        servings: result.servings || 4,
+        type: RECIPE_TYPES.includes(result.type) ? result.type : 'Otro',
+        ingredients: Array.isArray(result.ingredients) ? result.ingredients : []
+      });
+    }catch(err){
+      status.textContent = '⚠️ ' + err.message;
+      btn.disabled = false;
+      btn.textContent = '✨ Buscar receta con IA';
+    }
   };
 }
 
 function openRecipeForm(recipeId, prefill){
   const editing = recipeId ? getRecipe(recipeId) : null;
   const base = editing || prefill || { name:'', ingredients:[], source:'manual', url:'', servings:4, type:'Otro' };
-  let ingredients = editing ? JSON.parse(JSON.stringify(editing.ingredients)) : [];
+  let ingredients = editing ? JSON.parse(JSON.stringify(editing.ingredients)) : (Array.isArray(base.ingredients) ? JSON.parse(JSON.stringify(base.ingredients)) : []);
 
   const bodyWrap = document.createElement('div');
   bodyWrap.innerHTML = `
