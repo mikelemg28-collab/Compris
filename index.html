@@ -1059,7 +1059,7 @@ function openWebRecipeSearch(){
     status.textContent = 'Compri está leyendo la página y Gemini está organizando los ingredientes.';
 
     try{
-      const res = await fetch('/api/recipe-from-url', {
+      const res = await fetch('/api/recipe-search', {
         method:'POST',
         headers:{'Content-Type':'application/json'},
         body:JSON.stringify({ url })
