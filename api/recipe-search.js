@@ -1,6 +1,9 @@
 module.exports = async function handler(req, res) {
-  if (req.method !== 'POST') return res.status(405).json({ error: 'Método no permitido.' });
-
+  const url = String(
+    req.method === 'POST'
+      ? (req.body?.url || '')
+      : (req.query?.url || '')
+  ).trim().slice(0, 1500);
   const query = String(req.body?.query || '').trim().slice(0, 120);
   if (!query) return res.status(400).json({ error: 'Escribí qué receta querés buscar.' });
 
