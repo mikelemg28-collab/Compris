@@ -1021,40 +1021,57 @@ function handleImportFiles(fileList){
   });
 }
 
-async function openWebRecipeSearch(){
+function openWebRecipeSearch(){
   openModal('Buscar receta en internet', `
     <div class="field">
       <label>¿Qué querés cocinar?</label>
       <input type="text" id="webQuery" placeholder="ej. milanesas al horno">
     </div>
-    <button class="btn btn-primary btn-block" id="goSearch">✨ Buscar receta con IA</button>
-    <p class="muted" style="margin-top:14px;">Compri buscará una receta en internet y cargará automáticamente las porciones y cantidades. Antes de guardarla vas a poder revisar y editar todo.</p>
+    <button class="btn btn-outline btn-block" id="goGoogle">Buscar en Google</button>
+    <p class="muted" style="margin-top:10px;">Elegí la receta que más te guste, copiá su enlace y volvé a Compri.</p>
+
+    <div class="field" style="margin-top:16px;">
+      <label>Pegá el enlace de la receta</label>
+      <input type="url" id="recipeUrl" placeholder="https://...">
+    </div>
+    <button class="btn btn-primary btn-block" id="loadWithAI">✨ Cargar ingredientes con IA</button>
+    <p class="muted" style="margin-top:10px;">Gemini leerá esa receta y completará porciones, ingredientes y cantidades. Antes de guardarla vas a poder revisar y editar todo.</p>
     <div id="webSearchStatus" class="muted" style="margin-top:10px;"></div>
   `);
 
-  document.getElementById('goSearch').onclick = async ()=>{
+  document.getElementById('goGoogle').onclick = ()=>{
     const q = document.getElementById('webQuery').value.trim();
-    if(!q) return;
-    const btn = document.getElementById('goSearch');
+    const search = q ? 'receta ' + q : 'recetas';
+    window.open('https://www.google.com/search?q=' + encodeURIComponent(search), '_blank', 'noopener');
+  };
+
+  document.getElementById('loadWithAI').onclick = async ()=>{
+    const url = document.getElementById('recipeUrl').value.trim();
+    if(!url){
+      document.getElementById('webSearchStatus').textContent = '⚠️ Pegá primero el enlace de la receta.';
+      return;
+    }
+
+    const btn = document.getElementById('loadWithAI');
     const status = document.getElementById('webSearchStatus');
     btn.disabled = true;
-    btn.textContent = 'Buscando…';
-    status.textContent = 'Gemini está buscando una receta y leyendo sus ingredientes.';
+    btn.textContent = 'Leyendo receta…';
+    status.textContent = 'Compri está leyendo la página y Gemini está organizando los ingredientes.';
 
     try{
-      const res = await fetch('/api/recipe-search', {
+      const res = await fetch('/api/recipe-from-url', {
         method:'POST',
         headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({ query:q })
+        body:JSON.stringify({ url })
       });
       const result = await res.json();
-      if(!res.ok) throw new Error(result.error || 'No se pudo buscar la receta.');
+      if(!res.ok) throw new Error(result.error || 'No se pudo leer la receta.');
 
       closeModal();
       openRecipeForm(null, {
-        name: result.name || (q.charAt(0).toUpperCase()+q.slice(1)),
+        name: result.name || 'Receta de internet',
         source:'web',
-        url: result.url || '',
+        url: result.url || url,
         servings: result.servings || 4,
         type: RECIPE_TYPES.includes(result.type) ? result.type : 'Otro',
         ingredients: Array.isArray(result.ingredients) ? result.ingredients : []
@@ -1062,11 +1079,10 @@ async function openWebRecipeSearch(){
     }catch(err){
       status.textContent = '⚠️ ' + err.message;
       btn.disabled = false;
-      btn.textContent = '✨ Buscar receta con IA';
+      btn.textContent = '✨ Cargar ingredientes con IA';
     }
   };
 }
-
 function openRecipeForm(recipeId, prefill){
   const editing = recipeId ? getRecipe(recipeId) : null;
   const base = editing || prefill || { name:'', ingredients:[], source:'manual', url:'', servings:4, type:'Otro' };
