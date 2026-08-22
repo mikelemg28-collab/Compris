@@ -1064,7 +1064,19 @@ function openWebRecipeSearch(){
         headers:{'Content-Type':'application/json'},
         body:JSON.stringify({ url })
       });
-      const result = await res.json();
+      const responseText = await res.text();
+
+let result;
+
+try {
+  result = JSON.parse(responseText);
+} catch {
+  throw new Error(
+    res.ok
+      ? 'La respuesta del servidor no era válida.'
+      : `Error del servidor (${res.status}).`
+  );
+}
       if(!res.ok) throw new Error(result.error || 'No se pudo leer la receta.');
 
       closeModal();
