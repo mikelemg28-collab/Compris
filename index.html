@@ -143,6 +143,47 @@
   .meal-slot .recipe-name{ flex:1; text-align:right; font-weight:600; line-height:1.4; }
   .meal-slot .recipe-name.empty{ color: var(--line-strong); font-style:italic; font-weight:400;}
   .meal-slot .recipe-name .rn-item{ display:block; }
+  .search-input{
+    width:100%; padding:10px 12px 10px 36px; border-radius:10px; border:1.5px solid var(--line-strong);
+    background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236B5F4E' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='M21 21l-4.3-4.3'/%3E%3C/svg%3E") no-repeat 11px center / 16px;
+    font-family:inherit; font-size:14px; color:var(--ink); margin-bottom:12px;
+  }
+  .rd-body h3{ font-family:'Manrope',sans-serif; font-weight:800; font-size:15px; margin:16px 0 6px; color:var(--ink); }
+  .rd-body ul, .rd-body ol{ margin:6px 0 10px 20px; padding:0; font-size:13.5px; color:var(--ink); line-height:1.6; }
+  .rd-body ol li{ margin-bottom:6px; }
+  .rd-body p{ margin:4px 0; font-size:13px; line-height:1.55; }
+  .rd-body a{ color:var(--green-deep); font-weight:600; }
+  .rn-dot{ display:inline-block; width:7px; height:7px; border-radius:50%; margin-right:6px; vertical-align:middle; }
+
+  /* Calendario del menú */
+  .btn:disabled{ opacity:.4; cursor:default; }
+  .cal-head{ display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; }
+  .cal-head .section-label{ margin:0; }
+  .cal-weeklabel{
+    font-family:'IBM Plex Mono', monospace; font-size:10px; text-transform:uppercase;
+    letter-spacing:.08em; color: var(--ink-soft); margin:12px 0 6px;
+  }
+  .cal-grid{ display:grid; grid-template-columns: repeat(7, 1fr); gap:6px; }
+  .cal-day{
+    background:#fff; border:1.5px solid var(--line); border-radius:10px;
+    padding:8px 0 9px; display:flex; flex-direction:column; align-items:center; gap:7px;
+    font-family:'Manrope', sans-serif; transition: border-color .12s ease, background .12s ease;
+  }
+  .cal-day .dow{ font-weight:800; font-size:12.5px; color: var(--ink-soft); }
+  .cal-day .dots{ display:flex; gap:3px; }
+  .cal-dot{
+    width:8px; height:8px; border-radius:50%;
+    border:1.5px solid var(--line-strong); box-sizing:border-box;
+  }
+  .cal-dot.on{ border-color:transparent; }
+  .cal-day.sel{ border-color: var(--green); background: rgba(53,96,63,0.08); box-shadow: 0 0 0 1px var(--green) inset; }
+  .cal-day.sel .dow{ color: var(--green-deep); }
+  .cal-legend{ margin-top:12px; font-size:11.5px; }
+  @media (max-width:380px){
+    .cal-grid{ gap:4px; }
+    .cal-dot{ width:7px; height:7px; }
+    .cal-day .dots{ gap:2px; }
+  }
 
   .receipt{
     background: var(--card); border-radius: 4px; position:relative;
@@ -173,6 +214,22 @@
   .item-row .iname{ flex:1; font-size:14px; font-weight:500; }
   .item-row.checked .iname{ text-decoration: line-through; color: var(--ink-soft); }
   .item-row .qty{ font-family:'IBM Plex Mono', monospace; font-size:12.5px; color: var(--ink-soft); white-space:nowrap; }
+  .unit-hint{
+    display:flex; gap:8px; align-items:center; justify-content:space-between;
+    background: rgba(231,167,44,0.18); border-left:3px solid var(--yellow); color:#7A5411;
+    border-radius:8px; padding:7px 9px; margin:-2px 0 10px; font-size:12px; line-height:1.4;
+  }
+  .unit-hint .btn{ flex-shrink:0; white-space:nowrap; }
+  .unit-note{ font-size:12px; color: var(--green-deep); margin:-2px 0 10px; }
+  .ing-row input.needs-check{ border-color: var(--yellow); background: rgba(231,167,44,0.16); }
+  .uc-block{ background:#fff; border:1px solid var(--line); border-radius:10px; padding:10px 12px; margin-bottom:10px; }
+  .uc-name{ font-family:'Manrope',sans-serif; font-weight:800; font-size:14px; margin-bottom:4px; }
+  .uc-row{ display:flex; gap:8px; align-items:flex-start; padding:3px 0; }
+  .uc-unit{ font-family:'IBM Plex Mono',monospace; font-size:11px; text-transform:uppercase; color:var(--ink-soft); width:76px; flex-shrink:0; padding-top:7px; }
+  .uc-recipes{ display:flex; flex-wrap:wrap; gap:6px; }
+  .uc-chip{ padding:5px 11px; border-radius:16px; border:1.5px solid var(--green); background:#fff; color:var(--green-deep); font-size:12px; font-weight:700; font-family:'Manrope',sans-serif; }
+  .item-uses{ font-size:11.5px; color: var(--ink-soft); line-height:1.4; margin-top:2px; }
+  .item-uses.more{ cursor:pointer; text-decoration:underline dotted; text-underline-offset:2px; }
   .item-row .del{ background:none;border:none; color:var(--red); opacity:.55; padding:2px 4px; font-size:15px; }
   .store-chips{ display:flex; gap:4px; flex-wrap:wrap; margin-top:3px; }
   .store-chip{
@@ -303,7 +360,7 @@
       <h1>Compri</h1>
       <span class="tag" id="periodTag">semana</span>
     </div>
-    <div class="sub" id="headerSub">Organizá tus comidas, armá la compra.</div>
+    <div class="sub" id="headerSub">Organiza tus comidas, arma la compra.</div>
   </header>
 
   <main id="main"></main>
@@ -557,6 +614,7 @@ function save(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); }
 function uid(){ return Math.random().toString(36).slice(2,10); }
 
 let recetasFilter = 'Todas';
+let recetasQuery = '';
 
 /* =========================================================
    NAV
@@ -579,10 +637,10 @@ function render(){
   periodTag.textContent = data.period + ' · ' + data.people + 'p';
   const subs = {
     inicio: 'Tu semana de un vistazo.',
-    menu: 'Armá tu menú día por día.',
+    menu: 'Arma tu menú día por día.',
     recetas: 'Tu recetario personal.',
-    lista: 'Todo lo que necesitás comprar.',
-    supers: 'Buscá productos por súper.',
+    lista: 'Todo lo que necesitas comprar.',
+    supers: 'Busca productos por súper.',
   };
   headerSub.textContent = subs[data.activeTab] || '';
   mainEl.innerHTML = '';
@@ -626,7 +684,7 @@ function renderInicio(){
       <h2>¡Hola! 👋</h2>
       <button class="help-btn" id="helpBtn" aria-label="Cómo funciona Compri">?</button>
     </div>
-    <p class="muted">Llevás <strong>${plannedMeals}/${totalSlots}</strong> comidas planificadas esta ${data.period}, para <strong>${data.people} persona${data.people!=1?'s':''}</strong>.</p>
+    <p class="muted">Llevas <strong>${plannedMeals}/${totalSlots}</strong> comidas planificadas esta ${data.period}, para <strong>${data.people} persona${data.people!=1?'s':''}</strong>.</p>
     <div style="display:flex; gap:8px; margin-top:12px; flex-wrap:wrap;">
       <button class="btn btn-primary" id="goMenu">Planificar menú</button>
       <button class="btn btn-outline" id="goList">Ver lista (${pendingItems})</button>
@@ -654,10 +712,10 @@ function renderInicio(){
     row.style.cssText='padding:8px 0; border-bottom:1px dashed var(--line);';
     const names = MEALS.map(m=>{
       const rs = d.meals[m.k].map(getRecipe).filter(Boolean);
-      const txt = rs.length ? rs.map(r=>r.name).join(' + ') : '— '+m.l.toLowerCase();
+      const txt = rs.length ? rs.map(r=>escapeHtml(r.name)).join(' + ') : '— '+m.l.toLowerCase();
       return `<span style="color:${rs.length?'var(--ink)':'var(--ink-soft)'}">${txt}</span>`;
     }).join(' · ');
-    row.innerHTML = `<strong style="font-family:'Manrope',sans-serif; font-weight:700;">${d.label}</strong><div class="muted" style="margin-top:2px; font-size:12.5px;">${names}</div>`;
+    row.innerHTML = `<strong style="font-family:'Manrope',sans-serif; font-weight:700;">${escapeHtml(d.label)}</strong><div class="muted" style="margin-top:2px; font-size:12.5px;">${names}</div>`;
     preview.appendChild(row);
   });
   mainEl.appendChild(preview);
@@ -671,7 +729,8 @@ const HELP_STEPS = [
     body:`<p style="text-align:center;">Organiza tus comidas, arma tu lista y haz las compras más fácil. 🛒</p>` },
   { emoji:'🍽️', title:'1. Arma tu menú',
     body:`<p>Ve a <strong>Menú</strong>, elige si quieres planificar una semana o una quincena e indica para cuántas personas cocinas.</p>
-          <p>Toca cualquier casillero (desayuno, almuerzo o cena) y elige una o varias recetas. Puedes combinar, por ejemplo, un plato principal con una ensalada. ¡Tú decides!</p>` },
+          <p>Tu plan se ve como un calendario: cada día tiene tres puntitos (desayuno, almuerzo y cena) que se pintan con el color del tipo de plato. Toca un día para ver su detalle y toca una comida para elegir una o varias recetas. Puedes combinar, por ejemplo, un plato principal con una ensalada. ¡Tú decides!</p>
+          <p>¿Quieres empezar de cero? Toca "Vaciar menú": tus recetas y tu lista no se borran.</p>` },
   { emoji:'📖', title:'2. Carga tus recetas',
     body:`<p>Puedes agregar recetas de tres formas:</p>
           <ul>
@@ -679,12 +738,18 @@ const HELP_STEPS = [
             <li>✨ <strong>Con IA:</strong> busca una receta en internet, copia el enlace y pégalo en Compri. Toca "✨ Cargar ingredientes con IA" y Gemini completará las porciones y los ingredientes por ti. Luego puedes ajustarlos como quieras.</li>
             <li>📥 <strong>Desde un archivo:</strong> importa una receta <code>.json</code> que te haya compartido alguien que también use Compri.</li>
           </ul>
-          <p>Indica cuántas porciones rinde cada receta y Compri ajustará las cantidades cuando armes tu menú. 😉</p>`,
-    tip:'💡 Tip: Compri ya incluye algunas recetas. Pruébalas, edítalas y adáptalas a tu gusto.' },
+          <p>Indica cuántas porciones rinde cada receta y Compri ajustará las cantidades cuando armes tu menú. 😉</p>
+          <p>Usa el buscador para encontrar una receta por su nombre y toca "Ver receta" para ver sus ingredientes y su preparación. Puedes escribir los pasos tú o dejar que la IA los traiga.</p>`,
+    tip:[
+      '💡 Tip: Compri ya incluye algunas recetas. Pruébalas, edítalas y adáptalas a tu gusto.',
+      '💡 Si un ingrediente ya está en otra receta con una unidad distinta (por ejemplo, papas en kg y en unidades), Compri te sugiere usar una sola. Así la lista lo suma en un solo renglón.'
+    ] },
   { emoji:'🛒', title:'3. Genera tu lista de compra',
     body:`<p>¿Menú listo? ¡Hora de ir de compras!</p>
           <p>Toca "Generar lista desde el menú" desde Inicio o Lista. Compri suma automáticamente todos los ingredientes que necesitas, ajustados a las porciones que planificaste.</p>
-          <p>Además, los organiza por rubro: verdulería, almacén, carnicería, lácteos, etc.</p>` },
+          <p>Además, los organiza por rubro: verdulería, almacén, carnicería, lácteos, etc.</p>
+          <p>Debajo de cada ingrediente verás para qué recetas lo necesitas. Si son muchas, toca esa línea para verlas todas.</p>
+          <p>Y si un ingrediente aparece en unidades distintas, Compri te avisa y te lleva a las recetas para unificarlas.</p>` },
   { emoji:'🏪', title:'4. Compra más fácil',
     body:`<p>Desde <strong>Súper</strong> puedes buscar productos directamente en los sitios de los supermercados y marcar dónde los encontraste.</p>
           <p>Así, tu lista también queda organizada por súper y sabes dónde comprar cada cosa.</p>` },
@@ -710,7 +775,7 @@ function openHelpModal(){
       <div class="tour-emoji">${s.emoji}</div>
       <h3 class="tour-title">${s.title}</h3>
       ${s.body}
-      ${s.tip ? `<div class="help-tip">${s.tip}</div>` : ''}
+      ${[].concat(s.tip || []).map(t=>`<div class="help-tip">${t}</div>`).join('')}
     </div>`;
     dotsEl.innerHTML = HELP_STEPS.map((_,i)=>`<span class="tour-dot ${i===step?'active':''}"></span>`).join('');
     const isLast = step === HELP_STEPS.length-1;
@@ -724,6 +789,93 @@ function openHelpModal(){
     };
   }
   renderStep();
+}
+
+/* ---------- Calendario del menú ---------- */
+const DOW_SHORT = ['L','M','X','J','V','S','D'];
+let menuSelectedDay = null;
+
+// Color del punto según el tipo de plato; si hay varias recetas de tipos distintos, se reparte en porciones.
+function mealDotStyle(recipes){
+  if(!recipes.length) return '';
+  const cols = recipes.slice(0,4).map(r=> typeColor(r.type || 'Otro').c);
+  if(new Set(cols).size === 1) return `background:${cols[0]};`;
+  const step = 100 / cols.length;
+  const stops = cols.map((c,i)=> `${c} ${i*step}% ${(i+1)*step}%`).join(', ');
+  return `background:conic-gradient(${stops});`;
+}
+
+function renderMenuCalendar(container){
+  // Día seleccionado: por defecto, el día de la semana de hoy (lunes = 0)
+  if(menuSelectedDay === null) menuSelectedDay = (new Date().getDay() + 6) % 7;
+  if(menuSelectedDay >= data.days.length) menuSelectedDay = 0;
+
+  container.innerHTML = '';
+  const total = data.days.length;
+  const weeks = Math.ceil(total / 7);
+  const plannedSlots = data.days.reduce((acc,d)=> acc + MEALS.filter(m=> d.meals[m.k].length>0).length, 0);
+
+  const card = el('div','card');
+  let gridsHtml = '';
+  for(let w=0; w<weeks; w++){
+    let cells = '';
+    for(let i=w*7; i<Math.min(total,(w+1)*7); i++){
+      const day = data.days[i];
+      const dots = MEALS.map(m=>{
+        const rs = day.meals[m.k].map(getRecipe).filter(Boolean);
+        return `<span class="cal-dot ${rs.length?'on':''}" style="${mealDotStyle(rs)}"></span>`;
+      }).join('');
+      cells += `<button type="button" class="cal-day ${i===menuSelectedDay?'sel':''}" data-day="${i}" aria-label="${escapeHtml(day.label)}">
+        <span class="dow">${DOW_SHORT[i%7]}</span><span class="dots">${dots}</span>
+      </button>`;
+    }
+    gridsHtml += (weeks>1 ? `<div class="cal-weeklabel">Semana ${w+1}</div>` : '') + `<div class="cal-grid">${cells}</div>`;
+  }
+  card.innerHTML = `
+    <div class="cal-head">
+      <div class="section-label">Tu ${data.period}</div>
+      <button class="btn btn-danger btn-sm" id="clearMenu" ${plannedSlots ? '' : 'disabled'}>Vaciar menú</button>
+    </div>
+    ${gridsHtml}
+    <p class="muted cal-legend">Los puntos son desayuno, almuerzo y cena. Se pintan con el color del tipo de plato.</p>
+  `;
+  container.appendChild(card);
+
+  card.querySelectorAll('.cal-day').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      menuSelectedDay = +btn.dataset.day;
+      renderMenuCalendar(container);
+    });
+  });
+  card.querySelector('#clearMenu').onclick = clearMenu;
+
+  // Detalle del día seleccionado
+  const day = data.days[menuSelectedDay];
+  const detail = el('div','day-card');
+  const mealsHtml = MEALS.map(m=>{
+    const rs = day.meals[m.k].map(getRecipe).filter(Boolean);
+    const nameHtml = rs.length
+      ? rs.map(r=>`<span class="rn-item"><span class="rn-dot" style="background:${typeColor(r.type || 'Otro').c};"></span>${escapeHtml(r.name)}</span>`).join('')
+      : `<span class="rn-item">+ elegir</span>`;
+    return `
+      <div class="meal-slot" data-meal="${m.k}">
+        <span class="label">${m.l}</span>
+        <span class="recipe-name ${rs.length?'':'empty'}">${nameHtml}</span>
+      </div>`;
+  }).join('');
+  detail.innerHTML = `<div class="day-name">${escapeHtml(day.label)}</div>${mealsHtml}`;
+  container.appendChild(detail);
+  detail.querySelectorAll('.meal-slot').forEach(slot=>{
+    slot.addEventListener('click', ()=> openMealPicker(menuSelectedDay, slot.dataset.meal));
+  });
+}
+
+function clearMenu(){
+  const hasMeals = data.days.some(d=> MEALS.some(m=> d.meals[m.k].length));
+  if(!hasMeals) return;
+  if(!confirm(`¿Vaciar todo el menú de la ${data.period}? Se quitan las comidas planificadas. Tus recetas, plantillas y lista de compra no se borran.`)) return;
+  data.days.forEach(d=>{ MEALS.forEach(m=>{ d.meals[m.k] = []; }); });
+  save(); render();
 }
 
 function renderMenu(){
@@ -747,32 +899,14 @@ function renderMenu(){
   toggle.querySelector('#pMinus').onclick = ()=>{ data.people = Math.max(1, data.people-1); save(); render(); };
   toggle.querySelector('#pPlus').onclick = ()=>{ data.people = Math.min(20, data.people+1); save(); render(); };
 
-  data.days.forEach((day, idx)=>{
-    const dc = el('div','day-card');
-    let mealsHtml = '';
-    MEALS.forEach(m=>{
-      const rs = day.meals[m.k].map(getRecipe).filter(Boolean);
-      const nameHtml = rs.length
-        ? rs.map(r=>`<span class="rn-item">${r.name}</span>`).join('')
-        : `<span class="rn-item">elegir</span>`;
-      mealsHtml += `
-        <div class="meal-slot" data-day="${idx}" data-meal="${m.k}">
-          <span class="label">${m.l}</span>
-          <span class="recipe-name ${rs.length?'':'empty'}">${nameHtml}</span>
-        </div>`;
-    });
-    dc.innerHTML = `<div class="day-name">${day.label}</div>${mealsHtml}`;
-    mainEl.appendChild(dc);
-  });
-
-  mainEl.querySelectorAll('.meal-slot').forEach(slot=>{
-    slot.addEventListener('click', ()=> openMealPicker(+slot.dataset.day, slot.dataset.meal));
-  });
+  const calWrap = el('div');
+  mainEl.appendChild(calWrap);
+  renderMenuCalendar(calWrap);
 
   const tplCard = el('div','card');
   tplCard.innerHTML = `
     <h2 style="font-size:16px;">Plantillas</h2>
-    <p class="muted">Guardá este menú para reutilizarlo otra semana.</p>
+    <p class="muted">Guarda este menú para reutilizarlo otra semana.</p>
     <button class="btn btn-outline btn-block" id="saveTpl" style="margin-top:8px;">Guardar como plantilla</button>
   `;
   mainEl.appendChild(tplCard);
@@ -784,7 +918,7 @@ function renderMenu(){
     data.templates.forEach(t=>{
       const row = el('div');
       row.style.cssText='display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px dashed var(--line);';
-      row.innerHTML = `<span>${t.name}</span>`;
+      row.innerHTML = `<span>${escapeHtml(t.name)}</span>`;
       const btns = el('div');
       const useBtn = mkBtn('Usar','btn-ghost'); useBtn.onclick=()=>applyTemplate(t.id);
       const delBtn = mkBtn('Borrar','btn-danger'); delBtn.onclick=()=>{ data.templates = data.templates.filter(x=>x.id!==t.id); save(); render(); };
@@ -808,14 +942,16 @@ function openMealPicker(dayIdx, mealKey){
   const day = data.days[dayIdx];
   let selected = [...day.meals[mealKey]];
   let pickFilter = 'Todas';
+  let pickQuery = '';
 
   if(!data.recipes.length){
-    openModal(`${day.label} · ${MEALS.find(m=>m.k===mealKey).l}`, `<p class="muted">Todavía no cargaste recetas. Andá a la pestaña <strong>Recetas</strong> para agregar alguna.</p>`);
+    openModal(`${day.label} · ${MEALS.find(m=>m.k===mealKey).l}`, `<p class="muted">Todavía no cargaste recetas. Ve a la pestaña <strong>Recetas</strong> para agregar alguna.</p>`);
     return;
   }
 
   openModal(`${day.label} · ${MEALS.find(m=>m.k===mealKey).l}`, `
-    <p class="muted" style="margin-top:-6px; margin-bottom:10px;">Podés combinar varias recetas para esta comida.</p>
+    <p class="muted" style="margin-top:-6px; margin-bottom:10px;">Puedes combinar varias recetas para esta comida.</p>
+    <input type="search" class="search-input" id="pickSearch" placeholder="Buscar receta por nombre…" autocomplete="off">
     <div id="pickFilters"></div>
     <div id="pickList"></div>
     <button class="btn btn-primary btn-block" id="pickSave" style="margin-top:14px;">Guardar selección</button>
@@ -825,24 +961,29 @@ function openMealPicker(dayIdx, mealKey){
   const listEl = document.getElementById('pickList');
   const filterOpts = ['Todas', ...presentRecipeTypes()];
 
+  document.getElementById('pickSearch').addEventListener('input', (e)=>{
+    pickQuery = e.target.value;
+    renderPickList();
+  });
+
   function refreshFilters(){
     renderFilterPills(filtersEl, filterOpts, pickFilter, (val)=>{ pickFilter = val; refreshFilters(); renderPickList(); });
   }
 
   function renderPickList(){
-    const filtered = pickFilter==='Todas' ? data.recipes : data.recipes.filter(r=>(r.type||'Otro')===pickFilter);
+    const filtered = filterRecipes(pickFilter, pickQuery);
     if(!filtered.length){
-      listEl.innerHTML = `<p class="muted">No hay recetas en "${pickFilter}" todavía.</p>`;
+      listEl.innerHTML = emptyRecipesMessage(pickFilter, pickQuery);
       return;
     }
     listEl.innerHTML = filtered.map(r=>{
       const on = selected.includes(r.id);
       const meta = r.servings ? `Rinde ${r.servings} porc. · ~${Math.max(1, Math.floor(r.servings / (data.people||1)))} comida(s) para ${data.people}p` : '';
       return `
-        <div class="pick-row ${on?'on':''}" data-rid="${r.id}">
+        <div class="pick-row ${on?'on':''}" data-rid="${escapeHtml(r.id)}">
           <div class="box"><svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round"><polyline points="4,13 9,18 20,6"/></svg></div>
           <div style="flex:1;">
-            <div class="pname">${r.name}</div>
+            <div class="pname">${escapeHtml(r.name)}</div>
             ${meta ? `<div class="pmeta">${meta}</div>` : ''}
           </div>
         </div>`;
@@ -866,7 +1007,7 @@ function openMealPicker(dayIdx, mealKey){
 }
 
 function saveTemplateFlow(){
-  const name = prompt('¿Cómo querés llamar a esta plantilla?');
+  const name = prompt('¿Cómo quieres llamar a esta plantilla?');
   if(!name) return;
   data.templates.push({ id: uid(), name, period: data.period, people: data.people, days: JSON.parse(JSON.stringify(data.days)) });
   save(); render();
@@ -896,7 +1037,7 @@ function renderRecetas(){
         <input type="file" id="importInput" accept=".json,application/json" multiple>
       </button>
     </div>
-    <p class="muted" style="margin-top:10px;">Importá archivos .json de recetas que te haya compartido un amigo con Compri, o exportá las tuyas desde cada receta para enviárselas.</p>
+    <p class="muted" style="margin-top:10px;">Importa archivos .json de recetas que te haya compartido un amigo con Compri, o exporta las tuyas desde cada receta para enviárselas.</p>
   `;
   mainEl.appendChild(addCard);
   addCard.querySelector('#addManual').onclick = ()=> openRecipeForm();
@@ -908,25 +1049,41 @@ function renderRecetas(){
 
   if(!data.recipes.length){
     const empty = el('div','card');
-    empty.innerHTML = `<div class="empty-state"><div class="big">Todavía no hay recetas</div><div>Cargá la primera para empezar a armar tu menú.</div></div>`;
+    empty.innerHTML = `<div class="empty-state"><div class="big">Todavía no hay recetas</div><div>Carga la primera para empezar a armar tu menú.</div></div>`;
     mainEl.appendChild(empty);
     return;
   }
 
+  // Buscador por nombre: la lista se redibuja aparte para no perder el foco del teclado
+  const searchInput = el('input','search-input');
+  searchInput.type = 'search';
+  searchInput.placeholder = 'Buscar receta por nombre…';
+  searchInput.autocomplete = 'off';
+  searchInput.value = recetasQuery;
+  mainEl.appendChild(searchInput);
+
+  const listWrap = el('div');
+  mainEl.appendChild(listWrap);
+  searchInput.addEventListener('input', ()=>{ recetasQuery = searchInput.value; renderRecetasList(listWrap); });
+  renderRecetasList(listWrap);
+}
+
+function renderRecetasList(container){
+  container.innerHTML = '';
   const present = presentRecipeTypes();
   if(recetasFilter!=='Todas' && !present.includes(recetasFilter)) recetasFilter = 'Todas';
   const filterOpts = ['Todas', ...present];
 
   const filterWrap = el('div');
-  mainEl.appendChild(filterWrap);
-  renderFilterPills(filterWrap, filterOpts, recetasFilter, (val)=>{ recetasFilter = val; render(); });
+  container.appendChild(filterWrap);
+  renderFilterPills(filterWrap, filterOpts, recetasFilter, (val)=>{ recetasFilter = val; renderRecetasList(container); });
 
-  const filtered = recetasFilter==='Todas' ? data.recipes : data.recipes.filter(r=>(r.type||'Otro')===recetasFilter);
+  const filtered = filterRecipes(recetasFilter, recetasQuery);
 
   if(!filtered.length){
     const empty = el('div','card');
-    empty.innerHTML = `<div class="empty-state"><div class="big">Nada por acá</div><div>No tenés recetas en "${recetasFilter}" todavía.</div></div>`;
-    mainEl.appendChild(empty);
+    empty.innerHTML = `<div class="empty-state">${emptyRecipesMessage(recetasFilter, recetasQuery)}</div>`;
+    container.appendChild(empty);
     return;
   }
 
@@ -935,22 +1092,26 @@ function renderRecetas(){
     const badgeLabel = r.source==='web' ? 'de la web' : (r.source==='imported' ? 'importada' : 'manual');
     const badgeClass = r.source==='web' ? 'web' : (r.source==='imported' ? 'imported' : 'manual');
     const tcol = typeColor(r.type || 'Otro');
+    const hasSteps = instructionSteps(r.instructions).length > 0;
+    const srcUrl = safeHttpUrl(r.url);
     card.innerHTML = `
       <div class="rtitle">
         <div>
-          <h3>${r.name}</h3>
-          <div class="ring">${r.ingredients.length} ingrediente${r.ingredients.length!==1?'s':''}${r.servings ? ' · Rinde '+r.servings+' porciones' : ''}</div>
-          <span class="type-tag" style="background:${tcol.bg}; color:${tcol.c};">${r.type || 'Otro'}</span>
+          <h3>${escapeHtml(r.name)}</h3>
+          <div class="ring">${r.ingredients.length} ingrediente${r.ingredients.length!==1?'s':''}${r.servings ? ' · Rinde '+r.servings+' porciones' : ''}${hasSteps ? ' · Con preparación' : ''}</div>
+          <span class="type-tag" style="background:${tcol.bg}; color:${tcol.c};">${escapeHtml(r.type || 'Otro')}</span>
         </div>
         <span class="badge-source ${badgeClass}">${badgeLabel}</span>
       </div>
       <div style="display:flex; gap:6px; margin-top:10px; flex-wrap:wrap;">
+        <button class="btn btn-ghost" data-act="view">Ver receta</button>
         <button class="btn btn-ghost" data-act="edit">Editar</button>
         <button class="btn btn-ghost" data-act="export">Exportar</button>
-        ${r.url ? `<a class="btn btn-ghost" href="${r.url}" target="_blank" rel="noopener">Ver fuente</a>` : ''}
+        ${srcUrl ? `<a class="btn btn-ghost" href="${escapeHtml(srcUrl)}" target="_blank" rel="noopener">Ver fuente</a>` : ''}
         <button class="btn btn-danger" data-act="del">Eliminar</button>
       </div>
     `;
+    card.querySelector('[data-act="view"]').onclick = ()=> openRecipeDetail(r.id);
     card.querySelector('[data-act="edit"]').onclick = ()=> openRecipeForm(r.id);
     card.querySelector('[data-act="export"]').onclick = ()=> exportRecipe(r);
     card.querySelector('[data-act="del"]').onclick = ()=>{
@@ -960,15 +1121,40 @@ function renderRecetas(){
         save(); render();
       }
     };
-    mainEl.appendChild(card);
+    container.appendChild(card);
   });
+}
+
+/* Ficha de la receta: ingredientes y preparación */
+function openRecipeDetail(id){
+  const r = getRecipe(id);
+  if(!r) return;
+  const tcol = typeColor(r.type || 'Otro');
+  const steps = instructionSteps(r.instructions);
+  const srcUrl = safeHttpUrl(r.url);
+  openModal(escapeHtml(r.name), `
+    <div class="rd-body">
+      <span class="type-tag" style="background:${tcol.bg}; color:${tcol.c}; margin-top:0;">${escapeHtml(r.type || 'Otro')}</span>
+      ${r.servings ? `<span class="muted"> · Rinde ${escapeHtml(String(r.servings))} porciones</span>` : ''}
+      <h3>Ingredientes</h3>
+      <ul>${r.ingredients.map(i=>`<li>${escapeHtml(trimNum(i.qty))} ${escapeHtml(i.unit)} · ${escapeHtml(i.name)}</li>`).join('')}</ul>
+      <h3>Preparación</h3>
+      ${steps.length
+        ? `<ol>${steps.map(s=>`<li>${escapeHtml(s)}</li>`).join('')}</ol>`
+        : `<p class="muted">Esta receta todavía no tiene pasos cargados. Puedes agregarlos desde "Editar".</p>`}
+      ${srcUrl ? `<p><a href="${escapeHtml(srcUrl)}" target="_blank" rel="noopener">Ver receta original</a></p>` : ''}
+      <button class="btn btn-outline btn-block" id="rdEdit" style="margin-top:14px;">Editar receta</button>
+    </div>
+  `);
+  document.getElementById('rdEdit').onclick = ()=>{ closeModal(); openRecipeForm(id); };
 }
 
 function exportRecipe(r){
   const payload = {
     compriRecipe: true, version: 1,
     name: r.name, servings: r.servings, type: r.type || 'Otro', url: r.url || '',
-    ingredients: r.ingredients.map(i=>({name:i.name, qty:i.qty, unit:i.unit, category:i.category}))
+    ingredients: r.ingredients.map(i=>({name:i.name, qty:i.qty, unit:i.unit, category:i.category})),
+    instructions: r.instructions || ''
   };
   const blob = new Blob([JSON.stringify(payload, null, 2)], {type:'application/json'});
   const url = URL.createObjectURL(blob);
@@ -998,7 +1184,8 @@ function handleImportFiles(fileList){
             servings: parseInt(item.servings) || 4,
             type: RECIPE_TYPES.includes(item.type) ? item.type : 'Otro',
             source: 'imported',
-            url: item.url || '',
+            url: safeHttpUrl(item.url),
+            instructions: normalizeInstructions(item.instructions),
             ingredients: item.ingredients.map(i=>({
               name: String(i.name||'').trim() || 'Ingrediente',
               qty: Number(i.qty) || 1,
@@ -1011,9 +1198,10 @@ function handleImportFiles(fileList){
       }catch(err){ failedCount++; }
       pending--;
       if(pending===0){
+        if(importedCount){ recetasQuery = ''; recetasFilter = 'Todas'; }
         save(); render();
         if(importedCount) alert(`Se importaron ${importedCount} receta${importedCount!==1?'s':''}.` + (failedCount? ` (${failedCount} archivo(s) no se pudieron leer)`:''));
-        else alert('No se pudo importar ningún archivo. Verificá que sean archivos .json exportados desde Compri.');
+        else alert('No se pudo importar ningún archivo. Verifica que sean archivos .json exportados desde Compri.');
       }
     };
     reader.onerror = ()=>{ failedCount++; pending--; if(pending===0){ save(); render(); } };
@@ -1024,18 +1212,18 @@ function handleImportFiles(fileList){
 function openWebRecipeSearch(){
   openModal('Buscar receta en internet', `
     <div class="field">
-      <label>¿Qué querés cocinar?</label>
+      <label>¿Qué quieres cocinar?</label>
       <input type="text" id="webQuery" placeholder="ej. milanesas al horno">
     </div>
     <button class="btn btn-outline btn-block" id="goGoogle">Buscar en Google</button>
-    <p class="muted" style="margin-top:10px;">Elegí la receta que más te guste, copiá su enlace y volvé a Compri.</p>
+    <p class="muted" style="margin-top:10px;">Elige la receta que más te guste, copia su enlace y vuelve a Compri.</p>
 
     <div class="field" style="margin-top:16px;">
-      <label>Pegá el enlace de la receta</label>
+      <label>Pega el enlace de la receta</label>
       <input type="url" id="recipeUrl" placeholder="https://...">
     </div>
     <button class="btn btn-primary btn-block" id="loadWithAI">✨ Cargar ingredientes con IA</button>
-    <p class="muted" style="margin-top:10px;">Gemini leerá esa receta y completará porciones, ingredientes y cantidades. Antes de guardarla vas a poder revisar y editar todo.</p>
+    <p class="muted" style="margin-top:10px;">Gemini leerá esa receta y completará porciones, ingredientes, cantidades y preparación. Antes de guardarla vas a poder revisar y editar todo.</p>
     <div id="webSearchStatus" class="muted" style="margin-top:10px;"></div>
   `);
 
@@ -1048,7 +1236,7 @@ function openWebRecipeSearch(){
   document.getElementById('loadWithAI').onclick = async ()=>{
     const url = document.getElementById('recipeUrl').value.trim();
     if(!url){
-      document.getElementById('webSearchStatus').textContent = '⚠️ Pegá primero el enlace de la receta.';
+      document.getElementById('webSearchStatus').textContent = '⚠️ Pega primero el enlace de la receta.';
       return;
     }
 
@@ -1086,7 +1274,8 @@ try {
         url: result.url || url,
         servings: result.servings || 4,
         type: RECIPE_TYPES.includes(result.type) ? result.type : 'Otro',
-        ingredients: Array.isArray(result.ingredients) ? result.ingredients : []
+        ingredients: Array.isArray(result.ingredients) ? result.ingredients : [],
+        instructions: normalizeInstructions(result.instructions)
       });
     }catch(err){
       status.textContent = '⚠️ ' + err.message;
@@ -1095,7 +1284,7 @@ try {
     }
   };
 }
-function openRecipeForm(recipeId, prefill){
+function openRecipeForm(recipeId, prefill, opts){
   const editing = recipeId ? getRecipe(recipeId) : null;
   const base = editing || prefill || { name:'', ingredients:[], source:'manual', url:'', servings:4, type:'Otro' };
   let ingredients = editing ? JSON.parse(JSON.stringify(editing.ingredients)) : (Array.isArray(base.ingredients) ? JSON.parse(JSON.stringify(base.ingredients)) : []);
@@ -1117,24 +1306,44 @@ function openRecipeForm(recipeId, prefill){
     ${base.source==='web' ? `
     <div class="field">
       <label>Link de la receta (opcional)</label>
-      <input type="text" id="rUrl" value="${escapeHtml(base.url||'')}" placeholder="pegá el link que encontraste">
+      <input type="text" id="rUrl" value="${escapeHtml(base.url||'')}" placeholder="pega el link que encontraste">
     </div>` : ''}
     <div class="section-label">Ingredientes</div>
     <div id="ingList"></div>
     <button class="btn btn-outline btn-sm" id="addIng" style="margin-top:4px;">+ Agregar ingrediente</button>
+    <div class="field" style="margin-top:16px;">
+      <label>Preparación (opcional)</label>
+      <textarea id="rInstructions" rows="6" placeholder="Escribe un paso por línea.&#10;Ej.: Pela y corta las papas.">${escapeHtml(base.instructions || '')}</textarea>
+    </div>
     <button class="btn btn-primary btn-block" id="saveRecipe" style="margin-top:16px;">${editing ? 'Guardar cambios' : 'Guardar receta'}</button>
   `;
   openModal(editing ? 'Editar receta' : 'Cargar receta', '');
   document.getElementById('modalSheet').appendChild(bodyWrap);
 
   const ingListEl = bodyWrap.querySelector('#ingList');
+  function applyUnitSuggestion(i, newUnit){
+    const ing = ingredients[i], from = ing.unit;
+    const converted = convertQty(ing.qty, from, newUnit);
+    ing.unit = newUnit;
+    if(converted !== null){
+      const before = trimNum(ing.qty);
+      ing.qty = converted;
+      ing._note = `Convertí ${before} ${from} a ${trimNum(converted)} ${newUnit}.`;
+    } else {
+      ing._note = `Cambié la unidad a ${newUnit}. Revisa que la cantidad siga siendo correcta.`;
+      ing._check = true;   // resalta la cantidad hasta que la revises
+    }
+    renderIngRows();
+  }
+
   function renderIngRows(){
     ingListEl.innerHTML = '';
     ingredients.forEach((ing, i)=>{
+      const wrap = el('div');
       const row = el('div','ing-row');
       row.innerHTML = `
         <input type="text" placeholder="ingrediente" value="${escapeHtml(ing.name)}" data-f="name">
-        <input type="number" min="0" step="0.1" placeholder="cant." value="${ing.qty}" data-f="qty">
+        <input type="number" min="0" step="0.1" placeholder="cant." value="${escapeHtml(String(ing.qty))}" data-f="qty"${ing._check ? ' class="needs-check"' : ''}>
         <select data-f="unit">
           ${UNITS.map(u=>`<option ${ing.unit===u?'selected':''}>${u}</option>`).join('')}
         </select>
@@ -1143,11 +1352,38 @@ function openRecipeForm(recipeId, prefill){
         </select>
         <button type="button" data-i="${i}">×</button>
       `;
+      const hint = el('div');
+      wrap.appendChild(row);
+      wrap.appendChild(hint);
+
+      function refreshHint(){
+        const sug = unitSuggestion(ing.name, ing.unit, editing ? editing.id : null, !!(opts && opts.forceUnitHints));
+        if(sug){
+          hint.className = 'unit-hint';
+          hint.innerHTML = `<span>💡 ${escapeHtml(sug.text)}</span><button type="button" class="btn btn-yellow btn-sm">Usar ${escapeHtml(unitLabel(sug.unit))}</button>`;
+          hint.querySelector('button').onclick = ()=> applyUnitSuggestion(i, sug.unit);
+        } else if(ing._note){
+          hint.className = 'unit-note';
+          hint.textContent = ing._note;
+        } else {
+          hint.className = '';
+          hint.innerHTML = '';
+        }
+      }
+
       row.querySelectorAll('input,select').forEach(inp=>{
-        inp.addEventListener('input', ()=>{ ingredients[i][inp.dataset.f] = inp.value; });
+        inp.addEventListener('input', ()=>{
+          ing[inp.dataset.f] = inp.value;
+          if(ing._note || ing._check){   // el usuario ya tocó algo: se quita el aviso anterior
+            delete ing._note; delete ing._check;
+            row.querySelector('[data-f="qty"]').classList.remove('needs-check');
+          }
+          refreshHint();
+        });
       });
       row.querySelector('button').onclick = ()=>{ ingredients.splice(i,1); renderIngRows(); };
-      ingListEl.appendChild(row);
+      refreshHint();
+      ingListEl.appendChild(wrap);
     });
   }
   if(!ingredients.length) ingredients.push({name:'',qty:1,unit:'unidad',category:'Otros'});
@@ -1157,18 +1393,23 @@ function openRecipeForm(recipeId, prefill){
 
   bodyWrap.querySelector('#saveRecipe').onclick = ()=>{
     const name = bodyWrap.querySelector('#rName').value.trim();
-    if(!name){ alert('Ponele un nombre a la receta.'); return; }
+    if(!name){ alert('Ponle un nombre a la receta.'); return; }
     const servings = parseInt(bodyWrap.querySelector('#rServings').value) || 4;
     const type = bodyWrap.querySelector('#rType').value;
     const cleanIngs = ingredients.filter(i=>i.name && i.name.trim()).map(i=>({
       name: i.name.trim(), qty: parseFloat(i.qty)||1, unit: i.unit||'unidad', category: i.category||'Otros'
     }));
+    const instructions = normalizeInstructions(bodyWrap.querySelector('#rInstructions').value);
     const urlField = bodyWrap.querySelector('#rUrl');
+    const rawUrl = urlField ? urlField.value.trim() : '';
+    const url = rawUrl ? (safeHttpUrl(rawUrl) || safeHttpUrl('https://' + rawUrl)) : '';
     if(editing){
       editing.name = name; editing.ingredients = cleanIngs; editing.servings = servings; editing.type = type;
-      if(urlField) editing.url = urlField.value.trim();
+      editing.instructions = instructions;
+      if(urlField) editing.url = url;
     } else {
-      data.recipes.push({ id: uid(), name, ingredients: cleanIngs, servings, type, source: base.source||'manual', url: urlField ? urlField.value.trim() : '' });
+      data.recipes.push({ id: uid(), name, ingredients: cleanIngs, servings, type, instructions, source: base.source||'manual', url });
+      recetasQuery = ''; recetasFilter = 'Todas';   // que la receta nueva no quede oculta por un filtro anterior
     }
     save(); closeModal(); render();
   };
@@ -1199,24 +1440,77 @@ function generateShoppingList(){
     const totalPortionsNeeded = occurrences[rid] * (data.people || 1);
     const batches = Math.max(1, Math.ceil(totalPortionsNeeded / servings));
     r.ingredients.forEach(ingr=>{
-      const key = (ingr.name.trim().toLowerCase())+'|'+ingr.unit;
+      const key = ingNameKey(ingr.name)+'|'+ingr.unit;
       if(!map[key]){
-        map[key] = { id: uid(), name: ingr.name.trim(), qty:0, unit: ingr.unit, category: ingr.category, checked:false, manual:false, stores:[] };
+        map[key] = { id: uid(), name: ingr.name.trim(), qty:0, unit: ingr.unit, category: ingr.category, checked:false, manual:false, stores:[], recipes:[] };
       }
       map[key].qty += (Number(ingr.qty)||0) * batches;
+      if(!map[key].recipes.includes(r.id)) map[key].recipes.push(r.id);   // en qué recetas se usa (en orden de aparición en el menú)
     });
   });
 
   const manualItems = data.shoppingList.filter(i=>i.manual);
   const oldChecks = {};
-  data.shoppingList.forEach(i=>{ oldChecks[(i.name.toLowerCase())+'|'+i.unit] = i.checked; });
+  const oldStores = {};
+  data.shoppingList.forEach(i=>{
+    const k = ingNameKey(i.name)+'|'+i.unit;
+    oldChecks[k] = i.checked;
+    oldStores[k] = Array.isArray(i.stores) ? i.stores : [];
+  });
   const generated = Object.values(map).map(i=>{
-    const k = i.name.toLowerCase()+'|'+i.unit;
+    const k = ingNameKey(i.name)+'|'+i.unit;
     if(oldChecks[k]!==undefined) i.checked = oldChecks[k];
+    if(oldStores[k]) i.stores = [...oldStores[k]];
     return i;
   });
   data.shoppingList = [...generated, ...manualItems];
   save();
+}
+
+// Ingredientes que, en las recetas del menú, aparecen en más de una unidad
+// (justo lo que hace que la lista los muestre en renglones separados)
+function menuUnitConflicts(){
+  const planned = new Set();
+  data.days.forEach(d=> MEALS.forEach(m=> d.meals[m.k].forEach(id=> planned.add(id))));
+  const byName = {};
+  data.recipes.forEach(r=>{
+    if(!planned.has(r.id)) return;
+    (r.ingredients || []).forEach(i=>{
+      const k = ingNameKey(i.name);
+      if(!k) return;
+      const g = byName[k] = byName[k] || { name: String(i.name).trim(), units: {} };
+      const list = g.units[i.unit] = g.units[i.unit] || [];
+      if(!list.some(x=> x.id === r.id)) list.push(r);
+    });
+  });
+  return Object.values(byName).filter(g=> Object.keys(g.units).length > 1);
+}
+
+function openUnitConflicts(){
+  const conflicts = menuUnitConflicts();
+  const blocks = conflicts.map(g=>`
+    <div class="uc-block">
+      <div class="uc-name">${escapeHtml(g.name)}</div>
+      ${Object.keys(g.units).map(u=>`
+        <div class="uc-row">
+          <span class="uc-unit">${escapeHtml(u)}</span>
+          <span class="uc-recipes">${g.units[u].map(r=>`<button type="button" class="uc-chip" data-rid="${escapeHtml(r.id)}">${escapeHtml(r.name)}</button>`).join('')}</span>
+        </div>`).join('')}
+    </div>`).join('');
+  openModal('Unificar unidades', `
+    <p class="muted" style="margin-top:-6px; margin-bottom:12px;">Estos ingredientes están en más de una unidad en las recetas de tu menú, por eso la lista los muestra separados. Toca una receta para abrirla: Compri te sugiere la unidad más usada en tus otras recetas.</p>
+    ${blocks || '<p class="muted">Ya no hay ingredientes con unidades distintas. 🎉</p>'}
+    <p class="muted" style="margin-top:12px;">Cuando termines, toca «Regenerar desde el menú» para actualizar la lista.</p>
+  `);
+  document.querySelectorAll('#modalSheet .uc-chip').forEach(btn=>{
+    btn.onclick = ()=>{ closeModal(); openRecipeForm(btn.dataset.rid, null, { forceUnitHints:true }); };
+  });
+}
+
+function usesLabel(recipes, expanded){
+  const names = recipes.map(r=>r.name);
+  if(expanded || names.length <= 3) return 'Para: ' + names.join(', ');
+  return 'Para: ' + names.slice(0,3).join(', ') + ` +${names.length-3} más`;
 }
 
 function renderLista(){
@@ -1237,9 +1531,19 @@ function renderLista(){
 
   if(!data.shoppingList.length){
     const empty = el('div','card');
-    empty.innerHTML = `<div class="empty-state"><div class="big">Tu lista está vacía</div><div>Planificá tu menú y tocá "Regenerar desde el menú", o agregá un ítem suelto.</div></div>`;
+    empty.innerHTML = `<div class="empty-state"><div class="big">Tu lista está vacía</div><div>Planifica tu menú y toca "Regenerar desde el menú", o agrega un ítem suelto.</div></div>`;
     mainEl.appendChild(empty);
     return;
+  }
+
+  const conflicts = menuUnitConflicts();
+  if(conflicts.length){
+    const n = conflicts.length;
+    const banner = el('div','unit-hint');
+    banner.style.margin = '0 0 14px';
+    banner.innerHTML = `<span>💡 ${n} ingrediente${n!==1?'s aparecen':' aparece'} en unidades distintas (por ejemplo, ${escapeHtml(conflicts[0].name)}) y la lista ${n!==1?'los muestra':'lo muestra'} en renglones separados.</span><button type="button" class="btn btn-yellow btn-sm" id="reviewUnits">Revisar</button>`;
+    mainEl.appendChild(banner);
+    banner.querySelector('#reviewUnits').onclick = openUnitConflicts;
   }
 
   const grouped = {};
@@ -1259,19 +1563,26 @@ function renderLista(){
     block.innerHTML = `<div class="cat-title">${cat}</div>`;
     grouped[cat].forEach(item=>{
       const row = el('div', 'item-row'+(item.checked?' checked':''));
+      const usedBy = (item.recipes || []).map(getRecipe).filter(Boolean);   // recetas que siguen existiendo
       row.innerHTML = `
         <button class="check" data-id="${item.id}">
           <svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round"><polyline points="4,13 9,18 20,6"/></svg>
         </button>
         <div style="flex:1;">
           <div class="iname">${escapeHtml(item.name)}</div>
-          ${item.stores.length ? `<div class="store-chips">${item.stores.map(s=>`<span class="store-chip">${storeName(s)}</span>`).join('')}</div>` : ''}
+          ${usedBy.length ? `<div class="item-uses${usedBy.length>3?' more':''}">${escapeHtml(usesLabel(usedBy,false))}</div>` : ''}
+          ${item.stores.length ? `<div class="store-chips">${item.stores.map(s=>`<span class="store-chip">${escapeHtml(storeName(s))}</span>`).join('')}</div>` : ''}
         </div>
-        <span class="qty">${trimNum(item.qty)} ${item.unit}</span>
+        <span class="qty">${trimNum(item.qty)} ${escapeHtml(item.unit)}</span>
         <button class="del" data-del="${item.id}">×</button>
       `;
       row.querySelector('.check').onclick = ()=>{ item.checked = !item.checked; save(); render(); };
       row.querySelector('.del').onclick = ()=>{ data.shoppingList = data.shoppingList.filter(x=>x.id!==item.id); save(); render(); };
+      const usesEl = row.querySelector('.item-uses.more');
+      if(usesEl){
+        let expanded = false;
+        usesEl.addEventListener('click', ()=>{ expanded = !expanded; usesEl.textContent = usesLabel(usedBy, expanded); });
+      }
       block.appendChild(row);
     });
     receipt.appendChild(block);
@@ -1292,12 +1603,12 @@ function renderLista(){
     }
   });
   const storeCard = el('div','card');
-  storeCard.innerHTML = `<h2 style="font-size:16px;">Lista por súper</h2><p class="muted">Asigná súper a cada producto desde la pestaña "Súper" para verlo agrupado acá.</p>`;
+  storeCard.innerHTML = `<h2 style="font-size:16px;">Lista por súper</h2><p class="muted">Asigna súper a cada producto desde la pestaña "Súper" para verlo agrupado aquí.</p>`;
   Object.keys(perStore).forEach(storeLabel=>{
     const sec = el('div');
     sec.style.marginTop='10px';
-    sec.innerHTML = `<div class="section-label">${storeLabel} (${perStore[storeLabel].length})</div>` +
-      perStore[storeLabel].map(i=>`<div style="font-size:13px; padding:3px 0;">• ${escapeHtml(i.name)} <span class="mono muted">${trimNum(i.qty)} ${i.unit}</span></div>`).join('');
+    sec.innerHTML = `<div class="section-label">${escapeHtml(storeLabel)} (${perStore[storeLabel].length})</div>` +
+      perStore[storeLabel].map(i=>`<div style="font-size:13px; padding:3px 0;">• ${escapeHtml(i.name)} <span class="mono muted">${trimNum(i.qty)} ${escapeHtml(i.unit)}</span></div>`).join('');
     storeCard.appendChild(sec);
   });
   mainEl.appendChild(storeCard);
@@ -1333,7 +1644,7 @@ function shareShoppingList(){
 
 function openShareFallback(text){
   openModal('Compartir lista', `
-    <p class="muted">Tu navegador no tiene el menú nativo para compartir. Copiá el texto o abrilo directo en WhatsApp.</p>
+    <p class="muted">Tu navegador no tiene el menú nativo para compartir. Copia el texto o ábrelo directo en WhatsApp.</p>
     <textarea id="shareText" readonly style="width:100%; min-height:180px; border-radius:9px; border:1.5px solid var(--line-strong); padding:10px; font-family:'IBM Plex Mono',monospace; font-size:12.5px; background:#fff; color:var(--ink);">${escapeHtml(text)}</textarea>
     <div style="display:flex; gap:8px; margin-top:12px; flex-wrap:wrap;">
       <button class="btn btn-primary" id="copyShare">Copiar texto</button>
@@ -1347,7 +1658,7 @@ function openShareFallback(text){
     if(navigator.clipboard && navigator.clipboard.writeText){
       navigator.clipboard.writeText(text).catch(()=>{});
     }
-    alert('Texto copiado. Pegalo donde quieras (Notas, WhatsApp, etc).');
+    alert('Texto copiado. Pégalo donde quieras (Notas, WhatsApp, etc).');
   };
   document.getElementById('waShare').onclick = ()=>{
     window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank');
@@ -1387,14 +1698,14 @@ function renderSupers(){
   const searchCard = el('div','card');
   searchCard.innerHTML = `
     <h2 style="font-size:16px;">Buscar producto</h2>
-    <p class="muted">Elegí un producto de tu lista o escribí uno nuevo, y buscalo directo en cada súper.</p>
+    <p class="muted">Elige un producto de tu lista o escribe uno nuevo, y búscalo directo en cada súper.</p>
     <div class="field" style="margin-top:10px;">
       <label>Producto</label>
       <input type="text" id="sQuery" placeholder="ej. leche descremada 1L">
     </div>
     ${data.shoppingList.length ? `
     <div class="field">
-      <label>O elegí de tu lista</label>
+      <label>O elige de tu lista</label>
       <select id="sFromList">
         <option value="">— seleccionar —</option>
         ${data.shoppingList.map(i=>`<option value="${i.id}">${escapeHtml(i.name)}</option>`).join('')}
@@ -1407,10 +1718,10 @@ function renderSupers(){
   const grid = el('div','store-grid');
   stores.forEach(s=>{
     const btn = el('div','store-btn');
-    btn.innerHTML = `<span class="sname">${s.name}</span><span class="sfound">Buscar →</span>`;
+    btn.innerHTML = `<span class="sname">${escapeHtml(s.name)}</span><span class="sfound">Buscar →</span>`;
     btn.onclick = ()=>{
       const q = searchCard.querySelector('#sQuery').value.trim();
-      if(!q){ alert('Escribí o elegí un producto primero.'); return; }
+      if(!q){ alert('Escribe o elige un producto primero.'); return; }
       if(!s.url){ alert(`${s.name} no tiene sitio web cargado.`); return; }
       window.open(buildStoreSearchUrl(s, q), '_blank');
     };
@@ -1448,13 +1759,13 @@ function renderSupers(){
 
   if(data.shoppingList.length){
     const assignCard = el('div','card');
-    assignCard.innerHTML = `<h2 style="font-size:16px;">Marcar dónde lo encontraste</h2><p class="muted">Tocá los súper donde viste cada producto. Así arma la "Lista por súper" en la pestaña Lista.</p>`;
+    assignCard.innerHTML = `<h2 style="font-size:16px;">Marcar dónde lo encontraste</h2><p class="muted">Toca los súper donde viste cada producto. Así arma la "Lista por súper" en la pestaña Lista.</p>`;
     data.shoppingList.forEach(item=>{
       const row = el('div');
       row.style.cssText = 'padding:10px 0; border-bottom:1px dashed var(--line);';
       row.innerHTML = `<div style="font-weight:700; font-family:'Manrope',sans-serif; font-size:13.5px; margin-bottom:6px;">${escapeHtml(item.name)}</div>
         <div style="display:flex; gap:5px; flex-wrap:wrap;">
-          ${stores.map(s=>`<button class="btn btn-sm ${item.stores.includes(s.id)?'btn-primary':'btn-outline'}" data-store="${s.id}" data-item="${item.id}">${s.name}</button>`).join('')}
+          ${stores.map(s=>`<button class="btn btn-sm ${item.stores.includes(s.id)?'btn-primary':'btn-outline'}" data-store="${escapeHtml(s.id)}" data-item="${escapeHtml(item.id)}">${escapeHtml(s.name)}</button>`).join('')}
         </div>`;
       assignCard.appendChild(row);
     });
@@ -1476,11 +1787,11 @@ function openAddStoreForm(){
     <div class="field"><label>Nombre</label><input type="text" id="csName" placeholder="ej. Almacén Don Pepe"></div>
     <div class="field"><label>Sitio web (opcional)</label><input type="text" id="csUrl" placeholder="https://..."></div>
     <button class="btn btn-primary btn-block" id="csSave">Agregar</button>
-    <p class="muted" style="margin-top:10px;">Si no tiene sitio web, igual podés agregarlo para marcarlo en tu lista — el botón de búsqueda simplemente no va a hacer nada para ese lugar.</p>
+    <p class="muted" style="margin-top:10px;">Si no tiene sitio web, igual puedes agregarlo para marcarlo en tu lista — el botón de búsqueda simplemente no va a hacer nada para ese lugar.</p>
   `);
   document.getElementById('csSave').onclick = ()=>{
     const name = document.getElementById('csName').value.trim();
-    if(!name){ alert('Ponele un nombre.'); return; }
+    if(!name){ alert('Ponle un nombre.'); return; }
     let url = document.getElementById('csUrl').value.trim();
     if(url && !/^https?:\/\//i.test(url)) url = 'https://' + url;
     data.customStores.push({ id: uid(), name, url });
@@ -1501,8 +1812,88 @@ function deleteCustomStore(id){
 function el(tag, cls){ const e=document.createElement(tag); if(cls) e.className=cls; return e; }
 function mkBtn(text, cls){ const b=document.createElement('button'); b.className='btn '+cls; b.textContent=text; return b; }
 function getRecipe(id){ return data.recipes.find(r=>r.id===id); }
+
+// Clave con la que la lista junta ingredientes iguales (mismo nombre, sin importar mayúsculas)
+function ingNameKey(name){ return String(name||'').trim().toLowerCase(); }
+
+// Unidades que se pueden convertir entre sí sin adivinar (peso y volumen)
+const UNIT_FAMILIES = { g:['peso',1], kg:['peso',1000], ml:['volumen',1], l:['volumen',1000] };
+function convertQty(qty, from, to){
+  const a = UNIT_FAMILIES[from], b = UNIT_FAMILIES[to], n = parseFloat(qty);
+  if(!a || !b || a[0] !== b[0] || !isFinite(n)) return null;
+  return Math.round((n * a[1] / b[1]) * 1000) / 1000;
+}
+const UNIT_LABELS = { unidad:'unidades', paquete:'paquetes', atado:'atados', cucharada:'cucharadas', taza:'tazas', pizca:'pizcas' };
+function unitLabel(u){ return UNIT_LABELS[u] || u; }
+
+// Si otra receta ya usa este ingrediente pero en una unidad distinta, sugiere la más usada.
+// No molesta si la unidad ya coincide con alguna otra receta (en ese caso la lista ya las junta),
+// salvo en modo "force" (al llegar desde el aviso de la Lista), que sugiere la unidad más usada igualmente.
+function unitSuggestion(name, unit, excludeId, force){
+  const key = ingNameKey(name);
+  if(!key) return null;
+  const found = {};   // unidad -> nombres de recetas que la usan
+  data.recipes.forEach(r=>{
+    if(r.id === excludeId) return;
+    (r.ingredients || []).forEach(i=>{
+      if(ingNameKey(i.name) !== key) return;
+      const list = found[i.unit] = found[i.unit] || [];
+      if(!list.includes(r.name)) list.push(r.name);
+    });
+  });
+  const units = Object.keys(found);
+  if(!units.length) return null;
+  if(found[unit] && !force) return null;   // normal: si ya coincide con otra receta, no se molesta
+  units.sort((a,b)=> found[b].length - found[a].length);
+  const best = units[0], names = found[best];
+  if(best === unit) return null;           // ya usa la unidad más común
+
+  const who = names.length === 1 ? `«${names[0]}» usa` : `${names.length} recetas usan`;
+  return { unit: best, text: `${who} este ingrediente en ${unitLabel(best)}. Con la misma unidad, la lista lo suma en un solo renglón.` };
+}
+
+// Texto sin tildes ni mayúsculas, para buscar por nombre
+function normText(s){ return String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim(); }
+
+// Solo se aceptan enlaces http(s); cualquier otra cosa (p. ej. javascript:) se descarta
+function safeHttpUrl(u){
+  try{
+    const parsed = new URL(String(u||'').trim());
+    return (parsed.protocol==='http:' || parsed.protocol==='https:') ? parsed.href : '';
+  }catch(e){ return ''; }
+}
+
+// Acepta texto o lista de pasos (de un .json o de la IA) y lo deja como texto, un paso por línea
+function normalizeInstructions(value){
+  const text = Array.isArray(value) ? value.map(v=>String(v||'')).join('\n') : (typeof value === 'string' ? value : '');
+  return text.trim().slice(0, 8000);
+}
+
+// Pasos de preparación: un paso por línea; se quitan numeraciones o viñetas escritas a mano
+function instructionSteps(text){
+  return String(text||'').split(/\r?\n/)
+    .map(l=> l.replace(/^\s*(?:\d+\s*[.)\-:]|[-•*])\s*/, '').trim())
+    .filter(Boolean);
+}
+
+// Recetas filtradas por tipo y por nombre (sin distinguir tildes ni mayúsculas)
+function filterRecipes(type, query){
+  const q = normText(query);
+  return data.recipes.filter(r=>{
+    if(type !== 'Todas' && (r.type || 'Otro') !== type) return false;
+    return !q || normText(r.name).includes(q);
+  });
+}
+function emptyRecipesMessage(type, query){
+  const q = String(query||'').trim();
+  let msg;
+  if(q && type !== 'Todas') msg = `No encontré recetas con "${escapeHtml(q)}" en ${escapeHtml(type)}.`;
+  else if(q) msg = `No encontré recetas con "${escapeHtml(q)}".`;
+  else msg = `No hay recetas en "${escapeHtml(type)}" todavía.`;
+  return `<p class="muted">${msg}</p>`;
+}
 function storeName(id){ const s = allStores().find(x=>x.id===id); return s ? s.name : id; }
-function trimNum(n){ n = Number(n); return Number.isInteger(n) ? n : n.toFixed(1); }
+function trimNum(n){ n = Number(n); return Number.isInteger(n) ? n : parseFloat(n.toFixed(2)); }
 function escapeHtml(str){ return String(str).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 
 const overlay = document.getElementById('modalOverlay');
