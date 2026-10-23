@@ -222,6 +222,12 @@
   .unit-hint .btn{ flex-shrink:0; white-space:nowrap; }
   .unit-note{ font-size:12px; color: var(--green-deep); margin:-2px 0 10px; }
   .ing-row input.needs-check{ border-color: var(--yellow); background: rgba(231,167,44,0.16); }
+  .uc-block{ background:#fff; border:1px solid var(--line); border-radius:10px; padding:10px 12px; margin-bottom:10px; }
+  .uc-name{ font-family:'Manrope',sans-serif; font-weight:800; font-size:14px; margin-bottom:4px; }
+  .uc-row{ display:flex; gap:8px; align-items:flex-start; padding:3px 0; }
+  .uc-unit{ font-family:'IBM Plex Mono',monospace; font-size:11px; text-transform:uppercase; color:var(--ink-soft); width:76px; flex-shrink:0; padding-top:7px; }
+  .uc-recipes{ display:flex; flex-wrap:wrap; gap:6px; }
+  .uc-chip{ padding:5px 11px; border-radius:16px; border:1.5px solid var(--green); background:#fff; color:var(--green-deep); font-size:12px; font-weight:700; font-family:'Manrope',sans-serif; }
   .item-uses{ font-size:11.5px; color: var(--ink-soft); line-height:1.4; margin-top:2px; }
   .item-uses.more{ cursor:pointer; text-decoration:underline dotted; text-underline-offset:2px; }
   .item-row .del{ background:none;border:none; color:var(--red); opacity:.55; padding:2px 4px; font-size:15px; }
@@ -354,7 +360,7 @@
       <h1>Compri</h1>
       <span class="tag" id="periodTag">semana</span>
     </div>
-    <div class="sub" id="headerSub">Organizá tus comidas, armá la compra.</div>
+    <div class="sub" id="headerSub">Organiza tus comidas, arma la compra.</div>
   </header>
 
   <main id="main"></main>
@@ -631,10 +637,10 @@ function render(){
   periodTag.textContent = data.period + ' · ' + data.people + 'p';
   const subs = {
     inicio: 'Tu semana de un vistazo.',
-    menu: 'Armá tu menú día por día.',
+    menu: 'Arma tu menú día por día.',
     recetas: 'Tu recetario personal.',
-    lista: 'Todo lo que necesitás comprar.',
-    supers: 'Buscá productos por súper.',
+    lista: 'Todo lo que necesitas comprar.',
+    supers: 'Busca productos por súper.',
   };
   headerSub.textContent = subs[data.activeTab] || '';
   mainEl.innerHTML = '';
@@ -678,7 +684,7 @@ function renderInicio(){
       <h2>¡Hola! 👋</h2>
       <button class="help-btn" id="helpBtn" aria-label="Cómo funciona Compri">?</button>
     </div>
-    <p class="muted">Llevás <strong>${plannedMeals}/${totalSlots}</strong> comidas planificadas esta ${data.period}, para <strong>${data.people} persona${data.people!=1?'s':''}</strong>.</p>
+    <p class="muted">Llevas <strong>${plannedMeals}/${totalSlots}</strong> comidas planificadas esta ${data.period}, para <strong>${data.people} persona${data.people!=1?'s':''}</strong>.</p>
     <div style="display:flex; gap:8px; margin-top:12px; flex-wrap:wrap;">
       <button class="btn btn-primary" id="goMenu">Planificar menú</button>
       <button class="btn btn-outline" id="goList">Ver lista (${pendingItems})</button>
@@ -723,7 +729,8 @@ const HELP_STEPS = [
     body:`<p style="text-align:center;">Organiza tus comidas, arma tu lista y haz las compras más fácil. 🛒</p>` },
   { emoji:'🍽️', title:'1. Arma tu menú',
     body:`<p>Ve a <strong>Menú</strong>, elige si quieres planificar una semana o una quincena e indica para cuántas personas cocinas.</p>
-          <p>Toca cualquier casillero (desayuno, almuerzo o cena) y elige una o varias recetas. Puedes combinar, por ejemplo, un plato principal con una ensalada. ¡Tú decides!</p>` },
+          <p>Tu plan se ve como un calendario: cada día tiene tres puntitos (desayuno, almuerzo y cena) que se pintan con el color del tipo de plato. Toca un día para ver su detalle y toca una comida para elegir una o varias recetas. Puedes combinar, por ejemplo, un plato principal con una ensalada. ¡Tú decides!</p>
+          <p>¿Quieres empezar de cero? Toca "Vaciar menú": tus recetas y tu lista no se borran.</p>` },
   { emoji:'📖', title:'2. Carga tus recetas',
     body:`<p>Puedes agregar recetas de tres formas:</p>
           <ul>
@@ -731,12 +738,18 @@ const HELP_STEPS = [
             <li>✨ <strong>Con IA:</strong> busca una receta en internet, copia el enlace y pégalo en Compri. Toca "✨ Cargar ingredientes con IA" y Gemini completará las porciones y los ingredientes por ti. Luego puedes ajustarlos como quieras.</li>
             <li>📥 <strong>Desde un archivo:</strong> importa una receta <code>.json</code> que te haya compartido alguien que también use Compri.</li>
           </ul>
-          <p>Indica cuántas porciones rinde cada receta y Compri ajustará las cantidades cuando armes tu menú. 😉</p>`,
-    tip:'💡 Tip: Compri ya incluye algunas recetas. Pruébalas, edítalas y adáptalas a tu gusto.' },
+          <p>Indica cuántas porciones rinde cada receta y Compri ajustará las cantidades cuando armes tu menú. 😉</p>
+          <p>Usa el buscador para encontrar una receta por su nombre y toca "Ver receta" para ver sus ingredientes y su preparación. Puedes escribir los pasos tú o dejar que la IA los traiga.</p>`,
+    tip:[
+      '💡 Tip: Compri ya incluye algunas recetas. Pruébalas, edítalas y adáptalas a tu gusto.',
+      '💡 Si un ingrediente ya está en otra receta con una unidad distinta (por ejemplo, papas en kg y en unidades), Compri te sugiere usar una sola. Así la lista lo suma en un solo renglón.'
+    ] },
   { emoji:'🛒', title:'3. Genera tu lista de compra',
     body:`<p>¿Menú listo? ¡Hora de ir de compras!</p>
           <p>Toca "Generar lista desde el menú" desde Inicio o Lista. Compri suma automáticamente todos los ingredientes que necesitas, ajustados a las porciones que planificaste.</p>
-          <p>Además, los organiza por rubro: verdulería, almacén, carnicería, lácteos, etc.</p>` },
+          <p>Además, los organiza por rubro: verdulería, almacén, carnicería, lácteos, etc.</p>
+          <p>Debajo de cada ingrediente verás para qué recetas lo necesitas. Si son muchas, toca esa línea para verlas todas.</p>
+          <p>Y si un ingrediente aparece en unidades distintas, Compri te avisa y te lleva a las recetas para unificarlas.</p>` },
   { emoji:'🏪', title:'4. Compra más fácil',
     body:`<p>Desde <strong>Súper</strong> puedes buscar productos directamente en los sitios de los supermercados y marcar dónde los encontraste.</p>
           <p>Así, tu lista también queda organizada por súper y sabes dónde comprar cada cosa.</p>` },
@@ -762,7 +775,7 @@ function openHelpModal(){
       <div class="tour-emoji">${s.emoji}</div>
       <h3 class="tour-title">${s.title}</h3>
       ${s.body}
-      ${s.tip ? `<div class="help-tip">${s.tip}</div>` : ''}
+      ${[].concat(s.tip || []).map(t=>`<div class="help-tip">${t}</div>`).join('')}
     </div>`;
     dotsEl.innerHTML = HELP_STEPS.map((_,i)=>`<span class="tour-dot ${i===step?'active':''}"></span>`).join('');
     const isLast = step === HELP_STEPS.length-1;
@@ -893,7 +906,7 @@ function renderMenu(){
   const tplCard = el('div','card');
   tplCard.innerHTML = `
     <h2 style="font-size:16px;">Plantillas</h2>
-    <p class="muted">Guardá este menú para reutilizarlo otra semana.</p>
+    <p class="muted">Guarda este menú para reutilizarlo otra semana.</p>
     <button class="btn btn-outline btn-block" id="saveTpl" style="margin-top:8px;">Guardar como plantilla</button>
   `;
   mainEl.appendChild(tplCard);
@@ -932,12 +945,12 @@ function openMealPicker(dayIdx, mealKey){
   let pickQuery = '';
 
   if(!data.recipes.length){
-    openModal(`${day.label} · ${MEALS.find(m=>m.k===mealKey).l}`, `<p class="muted">Todavía no cargaste recetas. Andá a la pestaña <strong>Recetas</strong> para agregar alguna.</p>`);
+    openModal(`${day.label} · ${MEALS.find(m=>m.k===mealKey).l}`, `<p class="muted">Todavía no cargaste recetas. Ve a la pestaña <strong>Recetas</strong> para agregar alguna.</p>`);
     return;
   }
 
   openModal(`${day.label} · ${MEALS.find(m=>m.k===mealKey).l}`, `
-    <p class="muted" style="margin-top:-6px; margin-bottom:10px;">Podés combinar varias recetas para esta comida.</p>
+    <p class="muted" style="margin-top:-6px; margin-bottom:10px;">Puedes combinar varias recetas para esta comida.</p>
     <input type="search" class="search-input" id="pickSearch" placeholder="Buscar receta por nombre…" autocomplete="off">
     <div id="pickFilters"></div>
     <div id="pickList"></div>
@@ -994,7 +1007,7 @@ function openMealPicker(dayIdx, mealKey){
 }
 
 function saveTemplateFlow(){
-  const name = prompt('¿Cómo querés llamar a esta plantilla?');
+  const name = prompt('¿Cómo quieres llamar a esta plantilla?');
   if(!name) return;
   data.templates.push({ id: uid(), name, period: data.period, people: data.people, days: JSON.parse(JSON.stringify(data.days)) });
   save(); render();
@@ -1024,7 +1037,7 @@ function renderRecetas(){
         <input type="file" id="importInput" accept=".json,application/json" multiple>
       </button>
     </div>
-    <p class="muted" style="margin-top:10px;">Importá archivos .json de recetas que te haya compartido un amigo con Compri, o exportá las tuyas desde cada receta para enviárselas.</p>
+    <p class="muted" style="margin-top:10px;">Importa archivos .json de recetas que te haya compartido un amigo con Compri, o exporta las tuyas desde cada receta para enviárselas.</p>
   `;
   mainEl.appendChild(addCard);
   addCard.querySelector('#addManual').onclick = ()=> openRecipeForm();
@@ -1036,7 +1049,7 @@ function renderRecetas(){
 
   if(!data.recipes.length){
     const empty = el('div','card');
-    empty.innerHTML = `<div class="empty-state"><div class="big">Todavía no hay recetas</div><div>Cargá la primera para empezar a armar tu menú.</div></div>`;
+    empty.innerHTML = `<div class="empty-state"><div class="big">Todavía no hay recetas</div><div>Carga la primera para empezar a armar tu menú.</div></div>`;
     mainEl.appendChild(empty);
     return;
   }
@@ -1188,7 +1201,7 @@ function handleImportFiles(fileList){
         if(importedCount){ recetasQuery = ''; recetasFilter = 'Todas'; }
         save(); render();
         if(importedCount) alert(`Se importaron ${importedCount} receta${importedCount!==1?'s':''}.` + (failedCount? ` (${failedCount} archivo(s) no se pudieron leer)`:''));
-        else alert('No se pudo importar ningún archivo. Verificá que sean archivos .json exportados desde Compri.');
+        else alert('No se pudo importar ningún archivo. Verifica que sean archivos .json exportados desde Compri.');
       }
     };
     reader.onerror = ()=>{ failedCount++; pending--; if(pending===0){ save(); render(); } };
@@ -1199,14 +1212,14 @@ function handleImportFiles(fileList){
 function openWebRecipeSearch(){
   openModal('Buscar receta en internet', `
     <div class="field">
-      <label>¿Qué querés cocinar?</label>
+      <label>¿Qué quieres cocinar?</label>
       <input type="text" id="webQuery" placeholder="ej. milanesas al horno">
     </div>
     <button class="btn btn-outline btn-block" id="goGoogle">Buscar en Google</button>
-    <p class="muted" style="margin-top:10px;">Elegí la receta que más te guste, copiá su enlace y volvé a Compri.</p>
+    <p class="muted" style="margin-top:10px;">Elige la receta que más te guste, copia su enlace y vuelve a Compri.</p>
 
     <div class="field" style="margin-top:16px;">
-      <label>Pegá el enlace de la receta</label>
+      <label>Pega el enlace de la receta</label>
       <input type="url" id="recipeUrl" placeholder="https://...">
     </div>
     <button class="btn btn-primary btn-block" id="loadWithAI">✨ Cargar ingredientes con IA</button>
@@ -1223,7 +1236,7 @@ function openWebRecipeSearch(){
   document.getElementById('loadWithAI').onclick = async ()=>{
     const url = document.getElementById('recipeUrl').value.trim();
     if(!url){
-      document.getElementById('webSearchStatus').textContent = '⚠️ Pegá primero el enlace de la receta.';
+      document.getElementById('webSearchStatus').textContent = '⚠️ Pega primero el enlace de la receta.';
       return;
     }
 
@@ -1271,7 +1284,7 @@ try {
     }
   };
 }
-function openRecipeForm(recipeId, prefill){
+function openRecipeForm(recipeId, prefill, opts){
   const editing = recipeId ? getRecipe(recipeId) : null;
   const base = editing || prefill || { name:'', ingredients:[], source:'manual', url:'', servings:4, type:'Otro' };
   let ingredients = editing ? JSON.parse(JSON.stringify(editing.ingredients)) : (Array.isArray(base.ingredients) ? JSON.parse(JSON.stringify(base.ingredients)) : []);
@@ -1293,7 +1306,7 @@ function openRecipeForm(recipeId, prefill){
     ${base.source==='web' ? `
     <div class="field">
       <label>Link de la receta (opcional)</label>
-      <input type="text" id="rUrl" value="${escapeHtml(base.url||'')}" placeholder="pegá el link que encontraste">
+      <input type="text" id="rUrl" value="${escapeHtml(base.url||'')}" placeholder="pega el link que encontraste">
     </div>` : ''}
     <div class="section-label">Ingredientes</div>
     <div id="ingList"></div>
@@ -1344,7 +1357,7 @@ function openRecipeForm(recipeId, prefill){
       wrap.appendChild(hint);
 
       function refreshHint(){
-        const sug = unitSuggestion(ing.name, ing.unit, editing ? editing.id : null);
+        const sug = unitSuggestion(ing.name, ing.unit, editing ? editing.id : null, !!(opts && opts.forceUnitHints));
         if(sug){
           hint.className = 'unit-hint';
           hint.innerHTML = `<span>💡 ${escapeHtml(sug.text)}</span><button type="button" class="btn btn-yellow btn-sm">Usar ${escapeHtml(unitLabel(sug.unit))}</button>`;
@@ -1380,7 +1393,7 @@ function openRecipeForm(recipeId, prefill){
 
   bodyWrap.querySelector('#saveRecipe').onclick = ()=>{
     const name = bodyWrap.querySelector('#rName').value.trim();
-    if(!name){ alert('Ponele un nombre a la receta.'); return; }
+    if(!name){ alert('Ponle un nombre a la receta.'); return; }
     const servings = parseInt(bodyWrap.querySelector('#rServings').value) || 4;
     const type = bodyWrap.querySelector('#rType').value;
     const cleanIngs = ingredients.filter(i=>i.name && i.name.trim()).map(i=>({
@@ -1454,6 +1467,46 @@ function generateShoppingList(){
   save();
 }
 
+// Ingredientes que, en las recetas del menú, aparecen en más de una unidad
+// (justo lo que hace que la lista los muestre en renglones separados)
+function menuUnitConflicts(){
+  const planned = new Set();
+  data.days.forEach(d=> MEALS.forEach(m=> d.meals[m.k].forEach(id=> planned.add(id))));
+  const byName = {};
+  data.recipes.forEach(r=>{
+    if(!planned.has(r.id)) return;
+    (r.ingredients || []).forEach(i=>{
+      const k = ingNameKey(i.name);
+      if(!k) return;
+      const g = byName[k] = byName[k] || { name: String(i.name).trim(), units: {} };
+      const list = g.units[i.unit] = g.units[i.unit] || [];
+      if(!list.some(x=> x.id === r.id)) list.push(r);
+    });
+  });
+  return Object.values(byName).filter(g=> Object.keys(g.units).length > 1);
+}
+
+function openUnitConflicts(){
+  const conflicts = menuUnitConflicts();
+  const blocks = conflicts.map(g=>`
+    <div class="uc-block">
+      <div class="uc-name">${escapeHtml(g.name)}</div>
+      ${Object.keys(g.units).map(u=>`
+        <div class="uc-row">
+          <span class="uc-unit">${escapeHtml(u)}</span>
+          <span class="uc-recipes">${g.units[u].map(r=>`<button type="button" class="uc-chip" data-rid="${escapeHtml(r.id)}">${escapeHtml(r.name)}</button>`).join('')}</span>
+        </div>`).join('')}
+    </div>`).join('');
+  openModal('Unificar unidades', `
+    <p class="muted" style="margin-top:-6px; margin-bottom:12px;">Estos ingredientes están en más de una unidad en las recetas de tu menú, por eso la lista los muestra separados. Toca una receta para abrirla: Compri te sugiere la unidad más usada en tus otras recetas.</p>
+    ${blocks || '<p class="muted">Ya no hay ingredientes con unidades distintas. 🎉</p>'}
+    <p class="muted" style="margin-top:12px;">Cuando termines, toca «Regenerar desde el menú» para actualizar la lista.</p>
+  `);
+  document.querySelectorAll('#modalSheet .uc-chip').forEach(btn=>{
+    btn.onclick = ()=>{ closeModal(); openRecipeForm(btn.dataset.rid, null, { forceUnitHints:true }); };
+  });
+}
+
 function usesLabel(recipes, expanded){
   const names = recipes.map(r=>r.name);
   if(expanded || names.length <= 3) return 'Para: ' + names.join(', ');
@@ -1478,9 +1531,19 @@ function renderLista(){
 
   if(!data.shoppingList.length){
     const empty = el('div','card');
-    empty.innerHTML = `<div class="empty-state"><div class="big">Tu lista está vacía</div><div>Planificá tu menú y tocá "Regenerar desde el menú", o agregá un ítem suelto.</div></div>`;
+    empty.innerHTML = `<div class="empty-state"><div class="big">Tu lista está vacía</div><div>Planifica tu menú y toca "Regenerar desde el menú", o agrega un ítem suelto.</div></div>`;
     mainEl.appendChild(empty);
     return;
+  }
+
+  const conflicts = menuUnitConflicts();
+  if(conflicts.length){
+    const n = conflicts.length;
+    const banner = el('div','unit-hint');
+    banner.style.margin = '0 0 14px';
+    banner.innerHTML = `<span>💡 ${n} ingrediente${n!==1?'s aparecen':' aparece'} en unidades distintas (por ejemplo, ${escapeHtml(conflicts[0].name)}) y la lista ${n!==1?'los muestra':'lo muestra'} en renglones separados.</span><button type="button" class="btn btn-yellow btn-sm" id="reviewUnits">Revisar</button>`;
+    mainEl.appendChild(banner);
+    banner.querySelector('#reviewUnits').onclick = openUnitConflicts;
   }
 
   const grouped = {};
@@ -1540,7 +1603,7 @@ function renderLista(){
     }
   });
   const storeCard = el('div','card');
-  storeCard.innerHTML = `<h2 style="font-size:16px;">Lista por súper</h2><p class="muted">Asigná súper a cada producto desde la pestaña "Súper" para verlo agrupado acá.</p>`;
+  storeCard.innerHTML = `<h2 style="font-size:16px;">Lista por súper</h2><p class="muted">Asigna súper a cada producto desde la pestaña "Súper" para verlo agrupado aquí.</p>`;
   Object.keys(perStore).forEach(storeLabel=>{
     const sec = el('div');
     sec.style.marginTop='10px';
@@ -1581,7 +1644,7 @@ function shareShoppingList(){
 
 function openShareFallback(text){
   openModal('Compartir lista', `
-    <p class="muted">Tu navegador no tiene el menú nativo para compartir. Copiá el texto o abrilo directo en WhatsApp.</p>
+    <p class="muted">Tu navegador no tiene el menú nativo para compartir. Copia el texto o ábrelo directo en WhatsApp.</p>
     <textarea id="shareText" readonly style="width:100%; min-height:180px; border-radius:9px; border:1.5px solid var(--line-strong); padding:10px; font-family:'IBM Plex Mono',monospace; font-size:12.5px; background:#fff; color:var(--ink);">${escapeHtml(text)}</textarea>
     <div style="display:flex; gap:8px; margin-top:12px; flex-wrap:wrap;">
       <button class="btn btn-primary" id="copyShare">Copiar texto</button>
@@ -1595,7 +1658,7 @@ function openShareFallback(text){
     if(navigator.clipboard && navigator.clipboard.writeText){
       navigator.clipboard.writeText(text).catch(()=>{});
     }
-    alert('Texto copiado. Pegalo donde quieras (Notas, WhatsApp, etc).');
+    alert('Texto copiado. Pégalo donde quieras (Notas, WhatsApp, etc).');
   };
   document.getElementById('waShare').onclick = ()=>{
     window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank');
@@ -1635,14 +1698,14 @@ function renderSupers(){
   const searchCard = el('div','card');
   searchCard.innerHTML = `
     <h2 style="font-size:16px;">Buscar producto</h2>
-    <p class="muted">Elegí un producto de tu lista o escribí uno nuevo, y buscalo directo en cada súper.</p>
+    <p class="muted">Elige un producto de tu lista o escribe uno nuevo, y búscalo directo en cada súper.</p>
     <div class="field" style="margin-top:10px;">
       <label>Producto</label>
       <input type="text" id="sQuery" placeholder="ej. leche descremada 1L">
     </div>
     ${data.shoppingList.length ? `
     <div class="field">
-      <label>O elegí de tu lista</label>
+      <label>O elige de tu lista</label>
       <select id="sFromList">
         <option value="">— seleccionar —</option>
         ${data.shoppingList.map(i=>`<option value="${i.id}">${escapeHtml(i.name)}</option>`).join('')}
@@ -1658,7 +1721,7 @@ function renderSupers(){
     btn.innerHTML = `<span class="sname">${escapeHtml(s.name)}</span><span class="sfound">Buscar →</span>`;
     btn.onclick = ()=>{
       const q = searchCard.querySelector('#sQuery').value.trim();
-      if(!q){ alert('Escribí o elegí un producto primero.'); return; }
+      if(!q){ alert('Escribe o elige un producto primero.'); return; }
       if(!s.url){ alert(`${s.name} no tiene sitio web cargado.`); return; }
       window.open(buildStoreSearchUrl(s, q), '_blank');
     };
@@ -1696,7 +1759,7 @@ function renderSupers(){
 
   if(data.shoppingList.length){
     const assignCard = el('div','card');
-    assignCard.innerHTML = `<h2 style="font-size:16px;">Marcar dónde lo encontraste</h2><p class="muted">Tocá los súper donde viste cada producto. Así arma la "Lista por súper" en la pestaña Lista.</p>`;
+    assignCard.innerHTML = `<h2 style="font-size:16px;">Marcar dónde lo encontraste</h2><p class="muted">Toca los súper donde viste cada producto. Así arma la "Lista por súper" en la pestaña Lista.</p>`;
     data.shoppingList.forEach(item=>{
       const row = el('div');
       row.style.cssText = 'padding:10px 0; border-bottom:1px dashed var(--line);';
@@ -1724,11 +1787,11 @@ function openAddStoreForm(){
     <div class="field"><label>Nombre</label><input type="text" id="csName" placeholder="ej. Almacén Don Pepe"></div>
     <div class="field"><label>Sitio web (opcional)</label><input type="text" id="csUrl" placeholder="https://..."></div>
     <button class="btn btn-primary btn-block" id="csSave">Agregar</button>
-    <p class="muted" style="margin-top:10px;">Si no tiene sitio web, igual podés agregarlo para marcarlo en tu lista — el botón de búsqueda simplemente no va a hacer nada para ese lugar.</p>
+    <p class="muted" style="margin-top:10px;">Si no tiene sitio web, igual puedes agregarlo para marcarlo en tu lista — el botón de búsqueda simplemente no va a hacer nada para ese lugar.</p>
   `);
   document.getElementById('csSave').onclick = ()=>{
     const name = document.getElementById('csName').value.trim();
-    if(!name){ alert('Ponele un nombre.'); return; }
+    if(!name){ alert('Ponle un nombre.'); return; }
     let url = document.getElementById('csUrl').value.trim();
     if(url && !/^https?:\/\//i.test(url)) url = 'https://' + url;
     data.customStores.push({ id: uid(), name, url });
@@ -1750,96 +1813,4 @@ function el(tag, cls){ const e=document.createElement(tag); if(cls) e.className=
 function mkBtn(text, cls){ const b=document.createElement('button'); b.className='btn '+cls; b.textContent=text; return b; }
 function getRecipe(id){ return data.recipes.find(r=>r.id===id); }
 
-// Clave con la que la lista junta ingredientes iguales (mismo nombre, sin importar mayúsculas)
-function ingNameKey(name){ return String(name||'').trim().toLowerCase(); }
-
-// Unidades que se pueden convertir entre sí sin adivinar (peso y volumen)
-const UNIT_FAMILIES = { g:['peso',1], kg:['peso',1000], ml:['volumen',1], l:['volumen',1000] };
-function convertQty(qty, from, to){
-  const a = UNIT_FAMILIES[from], b = UNIT_FAMILIES[to], n = parseFloat(qty);
-  if(!a || !b || a[0] !== b[0] || !isFinite(n)) return null;
-  return Math.round((n * a[1] / b[1]) * 1000) / 1000;
-}
-const UNIT_LABELS = { unidad:'unidades', paquete:'paquetes', atado:'atados', cucharada:'cucharadas', taza:'tazas', pizca:'pizcas' };
-function unitLabel(u){ return UNIT_LABELS[u] || u; }
-
-// Si otra receta ya usa este ingrediente pero en una unidad distinta, sugiere la más usada.
-// No molesta si la unidad ya coincide con alguna otra receta (en ese caso la lista ya las junta).
-function unitSuggestion(name, unit, excludeId){
-  const key = ingNameKey(name);
-  if(!key) return null;
-  const found = {};   // unidad -> nombres de recetas que la usan
-  data.recipes.forEach(r=>{
-    if(r.id === excludeId) return;
-    (r.ingredients || []).forEach(i=>{
-      if(ingNameKey(i.name) !== key) return;
-      const list = found[i.unit] = found[i.unit] || [];
-      if(!list.includes(r.name)) list.push(r.name);
-    });
-  });
-  const units = Object.keys(found);
-  if(!units.length || found[unit]) return null;
-  units.sort((a,b)=> found[b].length - found[a].length);
-  const best = units[0], names = found[best];
-  const who = names.length === 1 ? `«${names[0]}» usa` : `${names.length} recetas usan`;
-  return { unit: best, text: `${who} este ingrediente en ${unitLabel(best)}. Con la misma unidad, la lista lo suma en un solo renglón.` };
-}
-
-// Texto sin tildes ni mayúsculas, para buscar por nombre
-function normText(s){ return String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim(); }
-
-// Solo se aceptan enlaces http(s); cualquier otra cosa (p. ej. javascript:) se descarta
-function safeHttpUrl(u){
-  try{
-    const parsed = new URL(String(u||'').trim());
-    return (parsed.protocol==='http:' || parsed.protocol==='https:') ? parsed.href : '';
-  }catch(e){ return ''; }
-}
-
-// Acepta texto o lista de pasos (de un .json o de la IA) y lo deja como texto, un paso por línea
-function normalizeInstructions(value){
-  const text = Array.isArray(value) ? value.map(v=>String(v||'')).join('\n') : (typeof value === 'string' ? value : '');
-  return text.trim().slice(0, 8000);
-}
-
-// Pasos de preparación: un paso por línea; se quitan numeraciones o viñetas escritas a mano
-function instructionSteps(text){
-  return String(text||'').split(/\r?\n/)
-    .map(l=> l.replace(/^\s*(?:\d+\s*[.)\-:]|[-•*])\s*/, '').trim())
-    .filter(Boolean);
-}
-
-// Recetas filtradas por tipo y por nombre (sin distinguir tildes ni mayúsculas)
-function filterRecipes(type, query){
-  const q = normText(query);
-  return data.recipes.filter(r=>{
-    if(type !== 'Todas' && (r.type || 'Otro') !== type) return false;
-    return !q || normText(r.name).includes(q);
-  });
-}
-function emptyRecipesMessage(type, query){
-  const q = String(query||'').trim();
-  let msg;
-  if(q && type !== 'Todas') msg = `No encontré recetas con "${escapeHtml(q)}" en ${escapeHtml(type)}.`;
-  else if(q) msg = `No encontré recetas con "${escapeHtml(q)}".`;
-  else msg = `No hay recetas en "${escapeHtml(type)}" todavía.`;
-  return `<p class="muted">${msg}</p>`;
-}
-function storeName(id){ const s = allStores().find(x=>x.id===id); return s ? s.name : id; }
-function trimNum(n){ n = Number(n); return Number.isInteger(n) ? n : parseFloat(n.toFixed(2)); }
-function escapeHtml(str){ return String(str).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
-
-const overlay = document.getElementById('modalOverlay');
-const sheet = document.getElementById('modalSheet');
-function openModal(title, bodyHtml){
-  sheet.innerHTML = `<div class="modal-head"><h2>${title}</h2><button id="mClose">×</button></div><div>${bodyHtml}</div>`;
-  overlay.classList.remove('hidden');
-  sheet.querySelector('#mClose').onclick = closeModal;
-}
-function closeModal(){ overlay.classList.add('hidden'); }
-overlay.addEventListener('click', (e)=>{ if(e.target===overlay) closeModal(); });
-
-render();
-</script>
-</body>
-</html>
+// Clave con la que la lista junta ingredientes iguales (mismo nombre, sin importar mayúscula
